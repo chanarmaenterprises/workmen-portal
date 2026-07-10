@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workmens Record Management System - Ravi Enterprises</title>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+        }
+        
+        /* Dashboard Split Window Core Layout */
+        .dashboard-wrapper {
+            display: flex;
+            max-width: 1250px;
+            margin: 0 auto;
+            gap: 25px;
+        }
+        
+        /* Left Panel - Live Employee Registry */
+        .registry-sidebar {
+            width: 320px;
+            background: #ffffff;
+            border-radius: 4px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            height: calc(100vh - 40px);
+            position: sticky;
+            top: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-title {
+            font-size: 15px;
+            font-weight: bold;
+            color: #002d62;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #002d62;
+            padding-bottom: 6px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+        .worker-list-container {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .worker-list-item {
+            padding: 10px 12px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            border-radius: 3px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .worker-list-item:hover {
+            background-color: #f0v4f8;
+            color: #002d62;
+            font-weight: bold;
+        }
+        .worker-list-item.selected {
+            background-color: #002d62;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        .id-badge {
+            font-size: 11px;
+            background: #eee;
+            color: #333;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-weight: normal;
+        }
+        .worker-list-item.selected .id-badge {
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+        }
+        .btn-clear-form {
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 13px;
+            margin-top: 15px;
+            text-transform: uppercase;
+        }
+
+        /* Right Panel - Form Layout */
+        .container {
+            flex: 1;
+            background: #ffffff;
+            padding: 30px 40px;
+            border-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+        
+        /* Header Formatting */
+        .header-main {
+            text-align: center;
+        }
+        .header-main h1 {
+            margin: 0 0 5px 0;
+            color: #002d62;
+            font-size: 26px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .header-main p {
+            margin: 0;
+            font-size: 13px;
+            color: #333;
+        }
+        .header-line {
+            border-bottom: 2px solid #002d62;
+            margin: 12px 0 25px 0;
+        }
+        
+        /* Layout Grid System */
+        .top-section-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 40px;
+        }
+        .meta-inputs {
+            flex: 1;
+        }
+        .meta-inline-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .meta-inline-item {
+            display: flex;
+            align-items: center;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        .meta-inline-item input {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            margin-left: 8px;
+            font-size: 13px;
+            background: transparent;
+            width: 130px;
+        }
+        
+        /* Photo Frame Mechanics */
+        .photo-box {
+            width: 125px;
+            height: 165px;
+            border: 1px solid #000;
+            background-color: #ffffff;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+        
+        /* Master Progress Tracking Indicator */
+        .wizard-progress {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+            background: #eee;
+            border-radius: 4px;
+            padding: 4px;
+            list-style: none;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+        .wizard-progress li {
+            flex: 1;
+            min-width: 100px;
+            text-align: center;
+            padding: 8px 4px;
+            font-weight: bold;
+            font-size: 11px;
+            color: #777;
+            cursor: pointer;
+        }
+        .wizard-progress li.active {
+            background: #002d62;
+            color: #fff;
+            border-radius: 2px;
+        }
+
+        .form-page {
+            display: none;
+        }
+        .form-page.active {
+            display: block;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #000;
+            margin: 20px 0 12px 0;
+            display: flex;
+            align-items: center;
+            text-transform: uppercase;
+        }
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 4px;
+            height: 14px;
+            background-color: #000;
+            margin-right: 8px;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 25px;
+            margin-bottom: 12px;
+        }
+        .form-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .form-group.flex-2 { flex: 2; }
+        
+        label {
+            font-size: 12px;
+            color: #222;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+        .line-input {
+            border: none;
+            border-bottom: 1px solid #000;
+            padding: 3px 0;
+            font-size: 13px;
+            width: 100%;
+            background: transparent;
+        }
+        .line-input:focus {
+            outline: none;
+        }
+        
+        .dual-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 6px;
+        }
+        .file-attachment-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .file-attachment-row span {
+            font-size: 11px;
+            font-weight: bold;
+            min-width: 45px;
+            color: #444;
+        }
+        .file-attachment-row input[type="file"] {
+            font-size: 11px;
+        }
+
+        /* Stacked Vertical Document Canvas Style Layout */
+        .vertical-document-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .clean-render-zone {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        .clean-render-zone img {
+            width: 100%;
+            height: auto;
+            max-height: 380px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+        .clean-render-zone embed {
+            width: 100%;
+            height: 380px;
+            border: none;
+        }
+
+        /* Table Optimization */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+            margin-bottom: 12px;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th {
+            background-color: #f5f5f5;
+            color: #000;
+            font-size: 11px;
+            padding: 6px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        td {
+            padding: 3px 5px;
+            font-size: 12px;
+            vertical-align: middle;
+        }
+        td.param-label {
+            font-weight: bold;
+            background-color: #fafafa;
+            width: 25%;
+        }
+        td.param-value {
+            width: 25%;
+        }
+        td input {
+            border: none !important;
+            background: transparent !important;
+            padding: 4px 2px !important;
+            margin: 0;
+            font-size: 12px;
+            width: 100%;
+        }
+        td input:focus {
+            outline: none;
+        }
+        .btn-table-action {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .radio-options {
+            display: flex;
+            gap: 20px;
+            padding-top: 4px;
+        }
+        .radio-options label {
+            font-weight: normal;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .official-badge-panel {
+            border: 2px dashed #002d62;
+            padding: 20px;
+            background-color: #fafbfd;
+            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .official-badge-panel h3 {
+            margin-top: 0;
+            color: #002d62;
+            font-size: 15px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #002d62;
+            padding-bottom: 8px;
+        }
+        .official-contract-text {
+            font-size: 13px;
+            line-height: 1.6;
+            text-align: justify;
+            color: #111;
+            margin-bottom: 20px;
+        }
+
+        /* Form Submissions Control Strip */
+        .action-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        .btn {
+            padding: 10px 22px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary { background-color: #002d62; color: white; }
+        .btn-secondary { background-color: #6c757d; color: white; }
+        .btn-print { background-color: #28a745; color: white; }
+        .btn-add-row {
+            background-color: #002d62;
+            color: white;
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 12mm 15mm 12mm 15mm;
+            }
+            body {
+                background-color: #fff;
+                padding: 0;
+                margin: 0;
+            }
+            .registry-sidebar {
+                display: none !important;
+            }
+            .dashboard-wrapper {
+                display: block;
+            }
+            .container {
+                box-shadow: none;
+                padding: 0;
+                max-width: 100%;
+                width: 100%;
+            }
+            .wizard-progress, .action-container, .btn-add-row, .btn-table-action, .dual-upload-container {
+                display: none !important;
+            }
+            body:not(.print-all-mode) .form-page { display: none !important; }
+            body:not(.print-all-mode) .form-page.active { display: block !important; }
+            body.print-all-mode .form-page { display: block !important; page-break-after: always; page-break-inside: avoid; }
+            body.print-all-mode .form-page:last-of-type { page-break-after: avoid; }
+            .line-input, .meta-inline-item input { border: none !important; border-bottom: 1px solid #000 !important; background: transparent !important; }
+            .clean-render-zone img { max-height: 380px !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-wrapper">
+    
+    <div class="registry-sidebar">
+        <div class="sidebar-title">Live Worker Registry</div>
+        <input type="text" class="search-box" id="sidebarSearch" placeholder="🔍 Search worker by name..." oninput="filterSidebarList()">
+        <ul class="worker-list-container" id="workerList">
+            <li style="text-align:center; padding:20px; font-style:italic; color:#666;">Connecting Database...</li>
+        </ul>
+        <button type="button" class="btn-clear-form" onclick="resetFormToNewEmployee()">+ Register New Worker</button>
+    </div>
+
+    <div class="container">
+        <div class="header-main">
+            <h1>Workmens Record</h1>
+            <p>Annexure - XV &bull; Ravi Enterprises Operational Records Database</p>
+        </div>
+        <div class="header-line"></div>
+
+        <ul class="wizard-progress" id="wizardProgress">
+            <li class="active" onclick="navigateToPage(1)">Page 1: Profile Master</li>
+            <li onclick="navigateToPage(2)">Page 2: KYC & Bank Details</li>
+            <li onclick="navigateToPage(3)">Page 3: Medical Records</li>
+            <li onclick="navigateToPage(4)">Page 4: EPF Nomination</li>
+            <li onclick="navigateToPage(5)">Page 5: Employment Roll</li>
+            <li onclick="navigateToPage(6)">Page 6: Aadhaar Doc</li>
+            <li onclick="navigateToPage(7)">Page 7: PAN Doc</li>
+        </ul>
+
+        <form id="workmanForm">
+            <div class="form-page active" id="page1">
+                <div class="top-section-grid">
+                    <div class="meta-inputs">
+                        <div class="meta-inline-row">
+                            <div class="meta-inline-item">
+                                Workmens Record ID: <input type="text" id="workmanRecordId" value="RE26001" readonly>
+                            </div>
+                            <div class="meta-inline-item">
+                                DOJ: <input type="text" id="p1_doj" value="07/11/2026">
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label>Name of the Contractor / Sub-contractor:</label>
+                            <input type="text" id="p1_contractorName" class="line-input" value="Ravi Enterprises">
+                        </div>
+                        <div class="form-group">
+                            <label>Full Name of the Workman:</label>
+                            <input type="text" id="p1_workmanName" class="line-input" value="Om prakash">
+                        </div>
+                    </div>
+                    <div class="photo-frame-container">
+                        <div class="photo-box" onclick="triggerPhotoUpload()">
+                            <img id="photoPreviewImg" class="photo-preview" alt="Workman Preview">
+                        </div>
+                        <input type="file" id="photoFileInput" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
+                    </div>
+                </div>
+
+                <div class="section-title">Profile Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Designation:</label>
+                        <input type="text" id="p1_designation" class="line-input" value="Technician Helper">
+                    </div>
+                    <div class="form-group">
+                        <label>Father / Husband's Name:</label>
+                        <input type="text" id="p1_fatherName" class="line-input" value="Seetaram">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Permanent Address:</label>
+                    <input type="text" id="p1_permAddress" class="line-input" value="S/o Seetaram, dhanni purwa, post chahalwa, Chahalwa">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>District:</label>
+                        <input type="text" id="p1_district" class="line-input" value="Shrawasti">
+                    </div>
+                    <div class="form-group">
+                        <label>State:</label>
+                        <input type="text" id="p1_state" class="line-input" value="Uttar pradesh">
+                    </div>
+                    <div class="form-group">
+                        <label>Pin Code:</label>
+                        <input type="text" id="p1_pinCode" class="line-input" value="271831">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>Gender:</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="gender_p1" id="gender_male" checked> Male</label>
+                            <label><input type="radio" name="gender_p1" id="gender_female"> Female</label>
+                        </div>
+                    </div>
+                    <div class="form-group"><label>Marital Status:</label>
+                        <div class="radio-options">
+                            <label><input type="radio" name="marital_p1" id="marital_married"> Married</label>
+                            <label><input type="radio" name="marital_p1" id="marital_unmarried" checked> Unmarried</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>DOB (dd/mm/yy):</label><input type="text" id="p1_dob" class="line-input" value="14/05/1999"></div>
+                    <div class="form-group"><label>Age (Yrs):</label><input type="text" id="p1_age" class="line-input" value="27"></div>
+                    <div class="form-group"><label>Nationality:</label><input type="text" id="p1_nationality" class="line-input" value="Indian"></div>
+                </div>
+                
+                <div class="section-title">Emergency Contacts</div>
+                <div class="form-row">
+                    <div class="form-group flex-2"><label>Name:</label><input type="text" id="p1_emergencyName" class="line-input" value="Chintu lal"></div>
+                    <div class="form-group"><label>Mobile:</label><input type="text" id="p1_emergencyMobile" class="line-input" value="6393160940"></div>
+                </div>
+
+                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span>Education History</span><button type="button" class="btn btn-add-row" onclick="addEducationRow()">+ Add Row</button>
+                </div>
+                <table id="educationTable">
+                    <thead><tr><th>Education</th><th>Year</th><th>School/Board</th><th>Location</th><th class="btn-table-action"></th></tr></thead>
+                    <tbody><tr>
+                        <td><input type="text" class="edu-field" placeholder="e.g. Matriculation"></td>
+                        <td><input type="text" class="edu-year" placeholder="Year"></td>
+                        <td><input type="text" class="edu-board" placeholder="Board Name"></td>
+                        <td><input type="text" class="edu-loc" placeholder="City/State"></td>
+                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                    </tr></tbody>
+                </table>
+            </div>
+
+            <div class="form-page" id="page2">
+                <div class="section-title">Statutory Compliance Details</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>PAN Number:</label><input type="text" id="p2_panNumber" class="line-input" placeholder="ABCDE1234F">
+                        <div class="dual-upload-container">
+                            <div class="file-attachment-row"><span>Front:</span><input type="file" id="panFrontInput" onchange="syncDocumentFile(this, 'panFrontRenderZone')"></div>
+                            <div class="file-attachment-row"><span>Back:</span><input type="file" id="panBackInput" onchange="syncDocumentFile(this, 'panBackRenderZone')"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Aadhaar Number:</label><input type="text" id="p2_aadhaarNumber" class="line-input" placeholder="0000 0000 0000">
+                        <div class="dual-upload-container">
+                            <div class="file-attachment-row"><span>Front:</span><input type="file" id="aadhaarFrontInput" onchange="syncDocumentFile(this, 'aadhaarFrontRenderZone')"></div>
+                            <div class="file-attachment-row"><span>Back:</span><input type="file" id="aadhaarBackInput" onchange="syncDocumentFile(this, 'aadhaarBackRenderZone')"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label>UAN Number (PF):</label><input type="text" id="p2_uanNumber" class="line-input" placeholder="10XXXXXXXXXX"></div>
+                    <div class="form-group"><label>ESIC Number:</label><input type="text" id="p2_esicNumber" class="line-input" placeholder="XXXXXXXXXX"></div>
+                </div>
+                <div class="section-title">Bank Details</div>
+                <div class="form-row">
+                    <div class="form-group"><label>IFSC Code:</label><input type="text" id="p2_ifscCode" class="line-input" placeholder="SBIN0001234"></div>
+                    <div class="form-group"><label>Account Number:</label><input type="text" id="p2_accountNumber" class="line-input" value="1284082283"></div>
+                </div>
+            </div>
+
+            <div class="form-page" id="page3">
+                <div class="section-title">Medical Examination parameter details</div>
+                <div class="form-group" style="margin-bottom: 15px;"><label>Blood Group:</label><input type="text" id="p3_bloodGroup" class="line-input" style="width: 30%;" value="O+"></div>
+                <table>
+                    <thead><tr><th colspan="2">Diagnostics</th><th colspan="2">Medical History Check</th></tr></thead>
+                    <tbody>
+                        <tr>
+                            <td class="param-label">Height</td><td><input type="text" id="med_height" value="168 cm"></td>
+                            <td class="param-label">Varicose</td><td><input type="text" id="med_varicose" value="Normal"></td>
+                        </tr>
+                        <tr>
+                            <td class="param-label">Weight</td><td><input type="text" id="med_weight" value="62 kg"></td>
+                            <td class="param-label">Seizure</td><td><input type="text" id="med_seizure" value="No History"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-page" id="page4">
+                <div class="section-title">EPF Nomination Declaration (Form 2)</div>
+                <button type="button" class="btn btn-add-row" onclick="addEPFRow()">+ Add Nominee</button>
+                <table id="epfNomTable">
+                    <thead><tr><th>Nominee Name</th><th>Address</th><th>Relationship</th><th>DOB</th><th>Share %</th><th class="btn-table-action"></th></tr></thead>
+                    <tbody><tr>
+                        <td><input type="text" class="epf-name" placeholder="Nominee Name"></td>
+                        <td><input type="text" class="epf-addr" placeholder="Address"></td>
+                        <td><input type="text" class="epf-rel" placeholder="Wife"></td>
+                        <td><input type="text" class="epf-dob" placeholder="dd/mm/yyyy"></td>
+                        <td><input type="text" class="epf-share" placeholder="100%"></td>
+                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                    </tr></tbody>
+                </table>
+            </div>
+
+            <div class="form-page" id="page5">
+                <div class="official-badge-panel">
+                    <h3>Employment Status Enrollment Track</h3>
+                    <div class="form-row">
+                        <div class="form-group"><label>Assigned ID:</label><input type="text" class="line-input" id="assignedEmployeeId" value="RE26001" readonly></div>
+                        <div class="form-group"><label>Daily Base Wage (₹):</label><input type="text" id="p5_dailyWage" class="line-input" value="850"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-page" id="page6">
+                <div class="vertical-document-stack">
+                    <div class="clean-render-zone" id="aadhaarFrontRenderZone"><div style="font-size:12px;color:#999;">Aadhaar Front Preview View Canvas</div></div>
+                    <div class="clean-render-zone" id="aadhaarBackRenderZone"><div style="font-size:12px;color:#999;">Aadhaar Back Preview View Canvas</div></div>
+                </div>
+            </div>
+
+            <div class="form-page" id="page7">
+                <div class="vertical-document-stack">
+                    <div class="clean-render-zone" id="panFrontRenderZone"><div style="font-size:12px;color:#999;">PAN Front Preview View Canvas</div></div>
+                    <div class="clean-render-zone" id="panBackRenderZone"><div style="font-size:12px;color:#999;">PAN Back Preview View Canvas</div></div>
+                </div>
+            </div>
+
+            <div class="action-container">
+                <div><button type="button" class="btn btn-secondary" id="btnPrev" onclick="changePage(-1)" style="display:none;">&larr; Previous</button></div>
+                <div>
+                    <button type="button" class="btn btn-print" id="btnPrintCurrent" onclick="window.print()">Print This Page 🖨️</button>
+                    <button type="button" class="btn btn-print" id="btnPrintAll" onclick="printAllPages()" style="background-color: #17a2b8;">Print Complete Booklet to PDF 🖨️</button>
+                    <button type="button" class="btn btn-primary" id="btnNext" onclick="changePage(1)">Next Step &rarr;</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+
+    // FIXME: Input your own web app variables from your project settings dashboard panel here
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+
+    // Dynamic global state trackers
+    let masterRecordsCache = {};
+    window.uploadedFiles = { photo: null, aadhaarFront: null, aadhaarBack: null, panFront: null, panBack: null };
+
+    // File selection listeners
+    window.previewPhoto = function(input) {
+        const file = input.files[0];
+        if (file) {
+            window.uploadedFiles.photo = file;
+            const reader = new FileReader();
+            reader.onload = function(e) { document.getElementById('photoPreviewImg').src = e.target.result; document.getElementById('photoPreviewImg').style.display = 'block'; }
+            reader.readAsDataURL(file);
+        }
+    };
+
+    window.syncDocumentFile = function(input, targetZoneId) {
+        const file = input.files[0];
+        const zone = document.getElementById(targetZoneId);
+        if (file && zone) {
+            if (targetZoneId === 'aadhaarFrontRenderZone') window.uploadedFiles.aadhaarFront = file;
+            if (targetZoneId === 'aadhaarBackRenderZone') window.uploadedFiles.aadhaarBack = file;
+            if (targetZoneId === 'panFrontRenderZone') window.uploadedFiles.panFront = file;
+            if (targetZoneId === 'panBackRenderZone') window.uploadedFiles.panBack = file;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.startsWith('image/')) { zone.innerHTML = `<img src="${e.target.result}" alt="Identity Document">`; }
+                else if (file.type === 'application/pdf') { zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`; }
+            }
+            reader.readAsDataURL(file);
+        }
+    };
+
+    async function uploadFileToFirebase(file, path) {
+        if (!file || typeof file === "string") return file || ""; // Return clean if already url path string
+        const storageRef = ref(storage, path);
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+    }
+
+    // Write-Mode Submission Target Rule Engine
+    window.saveCompleteRecordToFirebase = async function() {
+        const recordId = document.getElementById('workmanRecordId').value;
+        const submitBtn = document.getElementById('btnNext');
+        submitBtn.innerText = "Uploading Data Matrix...";
+        submitBtn.disabled = true;
+
+        try {
+            // Upload selected files
+            const photoUrl = await uploadFileToFirebase(window.uploadedFiles.photo, `records/${recordId}/profile.jpg`);
+            const aadhFrontUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarFront, `records/${recordId}/aadhaar_front.jpg`);
+            const aadhBackUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarBack, `records/${recordId}/aadhaar_back.jpg`);
+            const panFrontUrl = await uploadFileToFirebase(window.uploadedFiles.panFront, `records/${recordId}/pan_front.jpg`);
+            const panBackUrl = await uploadFileToFirebase(window.uploadedFiles.panBack, `records/${recordId}/pan_back.jpg`);
+
+            // Read list rows
+            const educationHistory = [];
+            document.querySelectorAll('#educationTable tbody tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if(inputs.length && inputs[0].value) {
+                    educationHistory.push({ level: inputs[0].value, year: inputs[1].value, board: inputs[2].value, location: inputs[3].value });
+                }
+            });
+
+            const epfNominees = [];
+            document.querySelectorAll('#epfNomTable tbody tr').forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                if(inputs.length && inputs[0].value) {
+                    epfNominees.push({ name: inputs[0].value, address: inputs[1].value, relationship: inputs[2].value, dob: inputs[3].value, share: inputs[4].value });
+                }
+            });
+
+            const payload = {
+                recordId,
+                workmanName: document.getElementById('p1_workmanName').value,
+                doj: document.getElementById('p1_doj').value,
+                contractorName: document.getElementById('p1_contractorName').value,
+                designation: document.getElementById('p1_designation').value,
+                fatherName: document.getElementById('p1_fatherName').value,
+                permanentAddress: document.getElementById('p1_permAddress').value,
+                district: document.getElementById('p1_district').value,
+                state: document.getElementById('p1_state').value,
+                pinCode: document.getElementById('p1_pinCode').value,
+                gender: document.getElementById('gender_male').checked ? 'Male' : 'Female',
+                maritalStatus: document.getElementById('marital_married').checked ? 'Married' : 'Unmarried',
+                dob: document.getElementById('p1_dob').value,
+                age: document.getElementById('p1_age').value,
+                nationality: document.getElementById('p1_nationality').value,
+                emergencyName: document.getElementById('p1_emergencyName').value,
+                emergencyMobile: document.getElementById('p1_emergencyMobile').value,
+                educationHistory,
+                epfNominees,
+                compliance: {
+                    panNumber: document.getElementById('p2_panNumber').value,
+                    aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
+                    uanNumber: document.getElementById('p2_uanNumber').value,
+                    esicNumber: document.getElementById('p2_esicNumber').value,
+                },
+                medical: {
+                    bloodGroup: document.getElementById('p3_bloodGroup').value,
+                    height: document.getElementById('med_height').value,
+                    weight: document.getElementById('med_weight').value,
+                    varicose: document.getElementById('med_varicose').value,
+                    seizure: document.getElementById('med_seizure').value
+                },
+                deployment: { dailyWage: document.getElementById('p5_dailyWage').value },
+                urls: { photoUrl, aadhFrontUrl, aadhBackUrl, panFrontUrl, panBackUrl }
+            };
+
+            await setDoc(doc(db, "workmen_records", recordId), payload);
+            alert(`Record ${recordId} uploaded successfully to Cloud Firestore database!`);
+            
+            submitBtn.innerText = "Complete & Save";
+            submitBtn.disabled = false;
+        } catch (err) {
+            console.error(err);
+            alert("Error saving record to database instance context.");
+            submitBtn.innerText = "Complete & Save";
+            submitBtn.disabled = false;
+        }
+    };
+
+    // Read-Mode Lookup Engine Interface Binding Rules
+    onSnapshot(collection(db, "workmen_records"), (snapshot) => {
+        const listContainer = document.getElementById('workerList');
+        listContainer.innerHTML = "";
+        masterRecordsCache = {};
+
+        if(snapshot.empty) {
+            listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;">No records found.</li>`;
+            return;
+        }
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            masterRecordsCache[doc.id] = data;
+
+            const li = document.createElement('li');
+            li.className = "worker-list-item";
+            li.setAttribute("data-id", doc.id);
+            li.innerHTML = `<span>${data.workmanName}</span> <span class="id-badge">${doc.id}</span>`;
+            li.onclick = () => populateFormWithSelectedWorker(doc.id, li);
+            listContainer.appendChild(li);
+        });
+        
+        // Auto calculate next index key code based on cache list range size
+        if(!document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
+            calculateNextAvailableSequenceIndex();
+        }
+    });
+
+    function calculateNextAvailableSequenceIndex() {
+        const existingIds = Object.keys(masterRecordsCache);
+        let nextIndex = existingIds.length + 1;
+        let generatedId = `RE26${String(nextIndex).padStart(3, '0')}`;
+        while(existingIds.includes(generatedId)) {
+            nextIndex++;
+            generatedId = `RE26${String(nextIndex).padStart(3, '0')}`;
+        }
+        document.getElementById('workmanRecordId').value = generatedId;
+        document.getElementById('assignedEmployeeId').value = generatedId;
+    }
+
+    window.resetFormToNewEmployee = function() {
+        document.getElementById('workmanForm').reset();
+        document.getElementById('workmanRecordId').removeAttribute('data-custom-edit');
+        document.getElementById('photoPreviewImg').src = "";
+        document.getElementById('photoPreviewImg').style.display = "none";
+        document.getElementById('aadhaarFrontRenderZone').innerHTML = "";
+        document.getElementById('aadhaarBackRenderZone').innerHTML = "";
+        document.getElementById('panFrontRenderZone').innerHTML = "";
+        document.getElementById('panBackRenderZone').innerHTML = "";
+        
+        document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
+        calculateNextAvailableSequenceIndex();
+        navigateToPage(1);
+        alert("Form cleared. Ready to onboard new technician.");
+    };
+
+    // Populates fields from selected database entry
+    function populateFormWithSelectedWorker(recordId, elementRef) {
+        document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
+        elementRef.classList.add('selected');
+
+        const data = masterRecordsCache[recordId];
+        if(!data) return;
+
+        document.getElementById('workmanRecordId').value = data.recordId;
+        document.getElementById('workmanRecordId').setAttribute('data-custom-edit', 'true');
+        document.getElementById('assignedEmployeeId').value = data.recordId;
+        
+        document.getElementById('p1_workmanName').value = data.workmanName || "";
+        document.getElementById('p1_doj').value = data.doj || "";
+        document.getElementById('p1_contractorName').value = data.contractorName || "Ravi Enterprises";
+        document.getElementById('p1_designation').value = data.designation || "";
+        document.getElementById('p1_fatherName').value = data.fatherName || "";
+        document.getElementById('p1_permAddress').value = data.permanentAddress || "";
+        document.getElementById('p1_district').value = data.district || "";
+        document.getElementById('p1_state').value = data.state || "";
+        document.getElementById('p1_pinCode').value = data.pinCode || "";
+        document.getElementById('p1_dob').value = data.dob || "";
+        document.getElementById('p1_age').value = data.age || "";
+        document.getElementById('p1_nationality').value = data.nationality || "Indian";
+        document.getElementById('p1_emergencyName').value = data.emergencyName || "";
+        document.getElementById('p1_emergencyMobile').value = data.emergencyMobile || "";
+        
+        if(data.gender === 'Male') document.getElementById('gender_male').checked = true;
+        else document.getElementById('gender_female').checked = true;
+
+        // Populate Statutory fields
+        if(data.compliance) {
+            document.getElementById('p2_panNumber').value = data.compliance.panNumber || "";
+            document.getElementById('p2_aadhaarNumber').value = data.compliance.aadhaarNumber || "";
+            document.getElementById('p2_uanNumber').value = data.compliance.uanNumber || "";
+            document.getElementById('p2_esicNumber').value = data.compliance.esicNumber || "";
+        }
+
+        if(data.medical) {
+            document.getElementById('p3_bloodGroup').value = data.medical.bloodGroup || "";
+            document.getElementById('med_height').value = data.medical.height || "";
+            document.getElementById('med_weight').value = data.medical.weight || "";
+            document.getElementById('med_varicose').value = data.medical.varicose || "";
+            document.getElementById('med_seizure').value = data.medical.seizure || "";
+        }
+
+        if(data.deployment) {
+            document.getElementById('p5_dailyWage').value = data.deployment.dailyWage || "";
+        }
+
+        // Render documents from URLs
+        window.uploadedFiles = { photo: data.urls?.photoUrl || null, aadhaarFront: data.urls?.aadhFrontUrl || null, aadhaarBack: data.urls?.aadhBackUrl || null, panFront: data.urls?.panFrontUrl || null, panBack: data.urls?.panBackUrl || null };
+
+        if(data.urls?.photoUrl) {
+            document.getElementById('photoPreviewImg').src = data.urls.photoUrl;
+            document.getElementById('photoPreviewImg').style.display = "block";
+        } else {
+            document.getElementById('photoPreviewImg').style.display = "none";
+        }
+
+        renderSavedUrlToZone(data.urls?.aadhFrontUrl, 'aadhaarFrontRenderZone');
+        renderSavedUrlToZone(data.urls?.aadhBackUrl, 'aadhaarBackRenderZone');
+        renderSavedUrlToZone(data.urls?.panFrontUrl, 'panFrontRenderZone');
+        renderSavedUrlToZone(data.urls?.panBackUrl, 'panBackRenderZone');
+
+        navigateToPage(1);
+    }
+
+    function renderSavedUrlToZone(url, elementId) {
+        const zone = document.getElementById(elementId);
+        if(!url) { zone.innerHTML = ""; return; }
+        if(url.includes('.pdf') || url.includes('application/pdf')) {
+            zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
+        } else {
+            zone.innerHTML = `<img src="${url}" alt="Cloud Identity Record Asset Document">`;
+        }
+    }
+
+    window.filterSidebarList = function() {
+        const q = document.getElementById('sidebarSearch').value.toLowerCase();
+        document.querySelectorAll('#workerList .worker-list-item').forEach(item => {
+            const text = item.querySelector('span').innerText.toLowerCase();
+            item.style.display = text.includes(q) ? 'flex' : 'none';
+        });
+    };
+</script>
+
+<script>
+    let currentPage = 1;
+    const totalPages = 7;
+
+    function triggerPhotoUpload() { document.getElementById('photoFileInput').click(); }
+
+    function addEducationRow() {
+        const tbody = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
+        const newRow = tbody.insertRow();
+        newRow.innerHTML = `
+            <td><input type="text" class="edu-field" placeholder="e.g. Matriculation"></td>
+            <td><input type="text" class="edu-year" placeholder="Year"></td>
+            <td><input type="text" class="edu-board" placeholder="Board Name"></td>
+            <td><input type="text" class="edu-loc" placeholder="City/State"></td>
+            <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+        `;
+    }
+
+    function addEPFRow() {
+        const tbody = document.getElementById('epfNomTable').getElementsByTagName('tbody')[0];
+        const newRow = tbody.insertRow();
+        newRow.innerHTML = `
+            <td><input type="text" class="epf-name" placeholder="Nominee Name"></td>
+            <td><input type="text" class="epf-addr" placeholder="Address"></td>
+            <td><input type="text" class="epf-rel" placeholder="Wife"></td>
+            <td><input type="text" class="epf-dob" placeholder="dd/mm/yyyy"></td>
+            <td><input type="text" class="epf-share" placeholder="100%"></td>
+            <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+        `;
+    }
+
+    function removeTableRow(button) {
+        const row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+    
+    function navigateToPage(pageNumber) {
+        if(pageNumber < 1 || pageNumber > totalPages) return;
+        document.getElementById(`page${currentPage}`).classList.remove('active');
+        document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.remove('active');
+        currentPage = pageNumber;
+        document.getElementById(`page${currentPage}`).classList.add('active');
+        document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.add('active');
+        document.getElementById('btnPrev').style.display = currentPage === 1 ? 'none' : 'inline-block';
+        
+        if (currentPage === totalPages) {
+            document.getElementById('btnNext').innerText = 'Complete & Save';
+            document.getElementById('btnNext').setAttribute('onclick', 'saveCompleteRecordToFirebase()');
+        } else {
+            document.getElementById('btnNext').innerText = 'Next Step \u2192';
+            document.getElementById('btnNext').setAttribute('onclick', 'changePage(1)');
+        }
+    }
+    
+    function changePage(direction) { navigateToPage(currentPage + direction); }
+
+    function printAllPages() {
+        document.body.classList.add('print-all-mode');
+        window.print();
+        setTimeout(() => { document.body.classList.remove('print-all-mode'); }, 500);
+    }
+</script>
+</body>
+</html>
