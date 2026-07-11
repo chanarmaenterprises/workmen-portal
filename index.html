@@ -23,6 +23,8 @@
             border-radius: 4px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
+        
+        /* Header Formatting */
         .header-main {
             text-align: center;
         }
@@ -43,6 +45,8 @@
             border-bottom: 2px solid #002d62;
             margin: 12px 0 25px 0;
         }
+        
+        /* Layout Grid System */
         .top-section-grid {
             display: flex;
             justify-content: space-between;
@@ -73,6 +77,8 @@
             background: transparent;
             width: 130px;
         }
+        
+        /* Photo Frame Mechanics */
         .photo-box {
             width: 125px;
             height: 165px;
@@ -91,6 +97,8 @@
             object-fit: cover;
             display: none;
         }
+        
+        /* Master Progress Tracking Indicator */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -117,12 +125,15 @@
             color: #fff;
             border-radius: 2px;
         }
+
         .form-page {
             display: none;
         }
         .form-page.active {
             display: block;
         }
+
+        /* Section Titles */
         .section-title {
             font-size: 13px;
             font-weight: bold;
@@ -140,6 +151,7 @@
             background-color: #000;
             margin-right: 8px;
         }
+        
         .form-row {
             display: flex;
             gap: 25px;
@@ -152,6 +164,7 @@
             position: relative;
         }
         .form-group.flex-2 { flex: 2; }
+        
         label {
             font-size: 12px;
             color: #222;
@@ -169,6 +182,7 @@
         .line-input:focus {
             outline: none;
         }
+        
         .dual-upload-container {
             display: flex;
             flex-direction: column;
@@ -189,6 +203,8 @@
         .file-attachment-row input[type="file"] {
             font-size: 11px;
         }
+
+        /* Clean Stacked Vertical Document Layout for Pages 6 & 7 */
         .vertical-document-stack {
             display: flex;
             flex-direction: column;
@@ -219,6 +235,8 @@
             height: 380px;
             border: none;
         }
+
+        /* Table Optimization */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -269,6 +287,7 @@
             font-weight: bold;
             font-size: 14px;
         }
+
         .radio-options {
             display: flex;
             gap: 20px;
@@ -282,6 +301,8 @@
             cursor: pointer;
             font-size: 12px;
         }
+
+        /* Corporate Document Aesthetics for Page 5 */
         .official-badge-panel {
             border: 2px dashed #002d62;
             padding: 20px;
@@ -306,6 +327,8 @@
             color: #111;
             margin-bottom: 20px;
         }
+
+        /* Form Submissions Control Strip */
         .action-container {
             display: flex;
             justify-content: space-between;
@@ -362,6 +385,8 @@
             .wizard-progress, .action-container, .btn-add-row, .btn-table-action, .dual-upload-container, #syncStatus {
                 display: none !important;
             }
+            
+            /* Print This Page Mode */
             body:not(.print-all-mode) .form-page {
                 display: none !important;
             }
@@ -370,6 +395,8 @@
                 page-break-after: avoid;
                 page-break-inside: avoid;
             }
+
+            /* Print Complete Booklet Mode */
             body.print-all-mode .form-page {
                 display: block !important;
                 page-break-after: always;
@@ -378,6 +405,7 @@
             body.print-all-mode .form-page:last-of-type {
                 page-break-after: avoid;
             }
+
             .line-input, .meta-inline-item input {
                 border: none !important;
                 border-bottom: 1px solid #000 !important;
@@ -406,6 +434,7 @@
 <body>
 
 <div class="container">
+    
     <div class="header-main">
         <h1>Workmens Record</h1>
         <p>Annexure - XV &bull; (Engaged by Registered / Non Registered Contractor)</p>
@@ -422,9 +451,10 @@
         <li onclick="navigateToPage(7)">Page 7: PAN Doc</li>
     </ul>
 
-    <div id="syncStatus">Status: Awaiting changes...</div>
+    <div id="syncStatus">Status: Synchronizing with database...</div>
 
     <form id="workmanForm">
+        
         <div class="form-page active" id="page1">
             <div class="top-section-grid">
                 <div class="meta-inputs">
@@ -682,6 +712,7 @@
         
         <div class="form-page" id="page3">
             <div class="section-title">Medical Examination for all workmen</div>
+            
             <div class="form-group" style="margin-bottom: 15px;">
                 <label>Blood Group:</label>
                 <input type="text" class="line-input" style="width: 30%;" id="bloodGroup" placeholder="e.g. O Positive">
@@ -940,34 +971,35 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // 1. Paste your Web Configuration App Key parameters over this block
-     const firebaseConfig = {
-    apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
+    const firebaseConfig = {
+         apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
     authDomain: "ravi-enterprises-portal.firebaseapp.com",
     projectId: "ravi-enterprises-portal",
     storageBucket: "ravi-enterprises-portal.firebasestorage.app",
     messagingSenderId: "426112480142",
     appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
-  };
 
+    };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const recordId = document.getElementById('workmanRecordId').value;
-    const docRef = doc(db, "workmen_records", recordId);
+    const initialIndex = 1;
+    const generatedId = `RE26${String(initialIndex).padStart(3, '0')}`;
+    
+    document.getElementById('workmanRecordId').value = generatedId;
+    document.getElementById('assignedEmployeeId').value = generatedId;
+
+    const docRef = doc(db, "workmen_records", generatedId);
     const syncStatus = document.getElementById('syncStatus');
 
-    // Debounce structure to avoid spamming the operational write thresholds
     let saveTimeout;
     function triggerAutoSave() {
         syncStatus.innerText = "Status: Changes detected. Saving...";
         clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(saveFormDataToFirestore, 1500);
+        saveTimeout = setTimeout(saveFormDataToFirestore, 1000);
     }
 
-    // Capture text vectors from form elements
     async function saveFormDataToFirestore() {
         try {
             const payload = {
@@ -1012,13 +1044,11 @@
                 baseWage: document.getElementById('baseWage').value,
                 deploymentZone: document.getElementById('deploymentZone').value,
                 
-                // Tables serialization mapping
                 education: serializeTable('educationTable'),
                 experience: serializeTable('experienceTable'),
                 epfNominees: serializeTable('epfNomTable'),
                 epsFamily: serializeTable('epsFamTable'),
                 
-                // Medical parameters extraction map
                 medicalVitals: serializeMedicalVitals(),
                 updatedAt: new Date().toISOString()
             };
@@ -1026,33 +1056,60 @@
             await setDoc(docRef, payload, { merge: true });
             syncStatus.innerText = "Status: Live Synced to Firestore ✔️";
         } catch (error) {
-            console.error("Firestore sync error:", error);
-            syncStatus.innerText = "Status: Sync Error (Check Config Keys)";
+            console.error(error);
+            syncStatus.innerText = "Status: Sync Error";
         }
     }
 
-    // Real-Time Listener Initialization
     onSnapshot(docRef, (snapshot) => {
-        if (snapshot.exists() && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+        if (snapshot.exists()) {
             const data = snapshot.data();
-            syncStatus.innerText = "Status: Remote updates fetched in real-time 🔄";
+            syncStatus.innerText = "Status: Remote data loaded 🔄";
             
-            // Map flat data records back to DOM elements
             Object.keys(data).forEach(key => {
                 const element = document.getElementById(key);
-                if (element && element.type !== 'file') {
+                if (element && document.activeElement !== element) {
                     element.value = data[key];
                 }
             });
+
+            if (data.gender === "Male") document.getElementById('genderMale').checked = true;
+            if (data.gender === "Female") document.getElementById('genderFemale').checked = true;
+            if (data.maritalStatus === "Married") document.getElementById('maritalMarried').checked = true;
+            if (data.maritalStatus === "Unmarried") document.getElementById('maritalUnmarried').checked = true;
+
+            if (data.medicalVitals) {
+                Object.keys(data.medicalVitals).forEach(medKey => {
+                    const input = document.querySelector(`#medicalTable input[data-med="${medKey}"]`);
+                    if (input && document.activeElement !== input) {
+                        input.value = data.medicalVitals[medKey];
+                    }
+                });
+            }
+
+            if (data.education) deserializeTable('educationTable', data.education, addEducationRow);
+            if (data.experience) deserializeTable('experienceTable', data.experience, addExperienceRow);
+            if (data.epfNominees) deserializeTable('epfNomTable', data.epfNominees, addEPFRow);
+            if (data.epsFamily) deserializeTable('epsFamTable', data.epsFamily, addEPSRow);
         }
     });
 
-    // Sub-matrix engines
     function serializeTable(tableId) {
-        const rows = document.querySelectorAll(`#${tableId} tbody tr`);
-        return Array.from(rows).map(row => {
-            const inputs = row.querySelectorAll('input');
-            return Array.from(inputs).map(i => i.value);
+        return Array.from(document.querySelectorAll(`#${tableId} tbody tr`)).map(row => {
+            return Array.from(row.querySelectorAll('input')).map(i => i.value);
+        });
+    }
+
+    function deserializeTable(tableId, dataMatrix, addRowFn) {
+        const tbody = document.querySelector(`#${tableId} tbody`);
+        tbody.innerHTML = '';
+        dataMatrix.forEach(rowData => {
+            addRowFn();
+            const lastRow = tbody.lastElementChild;
+            const inputs = lastRow.querySelectorAll('input');
+            rowData.forEach((val, idx) => {
+                if (inputs[idx]) inputs[idx].value = val;
+            });
         });
     }
 
@@ -1064,10 +1121,11 @@
         return vitals;
     }
 
-    // Attach real-time structural handlers across fields
-    document.querySelectorAll('input, select, textarea').forEach(el => {
-        el.addEventListener('input', triggerAutoSave);
-        el.addEventListener('change', triggerAutoSave);
+    window.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('input, select, textarea').forEach(el => {
+            el.addEventListener('input', triggerAutoSave);
+            el.addEventListener('change', triggerAutoSave);
+        });
     });
 </script>
 
@@ -1162,11 +1220,15 @@
     
     function navigateToPage(pageNumber) {
         if(pageNumber < 1 || pageNumber > totalPages) return;
+        
         document.getElementById(`page${currentPage}`).classList.remove('active');
         document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.remove('active');
+        
         currentPage = pageNumber;
+        
         document.getElementById(`page${currentPage}`).classList.add('active');
         document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.add('active');
+        
         document.getElementById('btnPrev').style.display = currentPage === 1 ? 'none' : 'inline-block';
         document.getElementById('btnNext').innerText = currentPage === totalPages ? 'Complete & Save' : 'Next Step \u2192';
     }
