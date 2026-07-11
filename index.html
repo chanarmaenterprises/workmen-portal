@@ -453,6 +453,15 @@
 
     <div id="syncStatus">Status: Awaiting changes...</div>
 
+    <div style="margin-bottom: 15px; padding: 15px; border: 1px solid #cbd5e1; border-radius: 4px; background: #f8fafc;">
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <input type="text" id="workerSearchInput" placeholder="Search by Name / Record ID / Aadhaar / PAN..." style="flex:1; min-width:220px; padding:8px 10px; border:1px solid #ccc; border-radius:4px; font-size:13px;">
+            <button type="button" class="btn btn-secondary" onclick="searchWorkerRecords()">🔍 Search</button>
+            <button type="button" class="btn btn-primary" onclick="createNewWorkerRecord()">+ New Worker Record</button>
+        </div>
+        <div id="workerSearchResults" style="margin-top:10px; max-height:220px; overflow-y:auto;"></div>
+    </div>
+
     <form id="workmanForm">
         
         <div class="form-page active" id="page1">
@@ -460,10 +469,10 @@
                 <div class="meta-inputs">
                     <div class="meta-inline-row">
                         <div class="meta-inline-item">
-                            Workmens Record ID: <input type="text" id="workmanRecordId" value="RE26001" readonly>
+                            Workmens Record ID: <input type="text" id="workmanRecordId" value="" readonly>
                         </div>
                         <div class="meta-inline-item">
-                            DOJ: <input type="text" id="doj" value="07/11/2026">
+                            DOJ: <input type="text" id="doj" value="">
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 12px;">
@@ -472,7 +481,7 @@
                     </div>
                     <div class="form-group">
                         <label>Full Name of the Workman:</label>
-                        <input type="text" class="line-input" id="workmanName" value="Om prakash">
+                        <input type="text" class="line-input" id="workmanName" value="">
                     </div>
                 </div>
 
@@ -488,31 +497,31 @@
             <div class="form-row">
                 <div class="form-group">
                     <label>Designation:</label>
-                    <input type="text" class="line-input" id="designation" value="Unfilled">
+                    <input type="text" class="line-input" id="designation" value="">
                 </div>
                 <div class="form-group">
                     <label>Father / Husband's Name:</label>
-                    <input type="text" class="line-input" id="fatherName" value="Seetaram">
+                    <input type="text" class="line-input" id="fatherName" value="">
                 </div>
             </div>
             
             <div class="form-group" style="margin-bottom: 12px;">
                 <label>Permanent Address:</label>
-                <input type="text" class="line-input" id="permAddress" value="S/o Seetaram, dhanni purwa, post chahalwa, Chahalwa">
+                <input type="text" class="line-input" id="permAddress" value="" placeholder="S/o [Father's Name], full permanent address">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>District:</label>
-                    <input type="text" class="line-input" id="district" value="Shrawasti">
+                    <input type="text" class="line-input" id="district" value="">
                 </div>
                 <div class="form-group">
                     <label>State:</label>
-                    <input type="text" class="line-input" id="state" value="Uttar pradesh">
+                    <input type="text" class="line-input" id="state" value="">
                 </div>
                 <div class="form-group">
                     <label>Pin Code:</label>
-                    <input type="text" class="line-input" id="pinCode" value="271831">
+                    <input type="text" class="line-input" id="pinCode" value="">
                 </div>
             </div>
 
@@ -542,18 +551,18 @@
                 </div>
                 <div class="form-group">
                     <label>No. of Children:</label>
-                    <input type="text" class="line-input" id="childrenCount" value="2">
+                    <input type="text" class="line-input" id="childrenCount" value="">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label>DOB (dd/mm/yy):</label>
-                    <input type="text" class="line-input" id="dob" value="14/05/1999">
+                    <input type="text" class="line-input" id="dob" value="">
                 </div>
                 <div class="form-group">
                     <label>Age (Yrs):</label>
-                    <input type="text" class="line-input" id="age" value="27">
+                    <input type="text" class="line-input" id="age" value="">
                 </div>
                 <div class="form-group">
                     <label>Nationality:</label>
@@ -565,21 +574,21 @@
             <div class="form-row">
                 <div class="form-group flex-2">
                     <label>Name of Contact Person:</label>
-                    <input type="text" class="line-input" id="emergencyName" value="Chintu lal">
+                    <input type="text" class="line-input" id="emergencyName" value="">
                 </div>
                 <div class="form-group">
                     <label>Relationship:</label>
-                    <input type="text" class="line-input" id="emergencyRelation" value="Brother">
+                    <input type="text" class="line-input" id="emergencyRelation" value="">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Mobile Number:</label>
-                    <input type="text" class="line-input" id="emergencyMobile" value="6393160940">
+                    <input type="text" class="line-input" id="emergencyMobile" value="">
                 </div>
                 <div class="form-group flex-2">
                     <label>Address:</label>
-                    <input type="text" class="line-input" id="emergencyAddress" value="dhanni purwa Shrawasti U.P 271831">
+                    <input type="text" class="line-input" id="emergencyAddress" value="">
                 </div>
             </div>
 
@@ -695,13 +704,13 @@
                 </div>
                 <div class="form-group">
                     <label>Account Number:</label>
-                    <input type="text" class="line-input" id="accountNumber" value="1284082283">
+                    <input type="text" class="line-input" id="accountNumber" value="">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Mobile Number (Linked to Bank):</label>
-                    <input type="text" class="line-input" id="bankMobile" value="6393160940">
+                    <input type="text" class="line-input" id="bankMobile" value="">
                 </div>
                 <div class="form-group">
                     <label>UPI ID:</label>
@@ -895,7 +904,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Assigned Employee ID Number:</label>
-                        <input type="text" class="line-input" id="assignedEmployeeId" value="RE26001" readonly>
+                        <input type="text" class="line-input" id="assignedEmployeeId" value="" readonly>
                     </div>
                     <div class="form-group">
                         <label>Official Skill Classification:</label>
@@ -969,7 +978,16 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import {
+        getFirestore, doc, setDoc, onSnapshot,
+        collection, getDocs, query, orderBy, limit
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import {
+        getStorage, ref as storageRef, uploadString, getDownloadURL
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    import {
+        getAuth, signInAnonymously, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
     // User Injected Active Firebase Key Matrix
     const firebaseConfig = {
@@ -981,26 +999,236 @@
         appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
     };
 
-    // Initialize App Core Framework Instances
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
+    const auth = getAuth(app);
+    const COLLECTION_NAME = "workmen_records";
 
-    const targetRecordId = "RE26001";
-    document.getElementById('workmanRecordId').value = targetRecordId;
-    document.getElementById('assignedEmployeeId').value = targetRecordId;
-
-    const docRef = doc(db, "workmen_records", targetRecordId);
     const syncStatus = document.getElementById('syncStatus');
+    const resultsPanel = document.getElementById('workerSearchResults');
 
+    // --- SESSION STATE (per selected worker record) ---
+    let docRef = null;
+    let currentRecordId = null;
+    let unsubscribeSnapshot = null;
+    let fileUrlMap = {}; // { photo: {url}, panFront: {url}, panBack: {url}, aadhaarFront: {url}, aadhaarBack: {url} }
+    let allRecordsCache = []; // [{id, clientName-ish fields...}] refreshed on search/list
+
+    // --- AUTH GATE ---
+    // Anonymous auth stops anonymous public internet bots hitting the DB with no credentials at all.
+    // It is NOT full security — pair it with the Firestore/Storage rules from DEPLOYMENT.md.
+    signInAnonymously(auth).catch(err => {
+        console.error("Auth error:", err);
+        syncStatus.innerText = "Status: Auth failed — enable Anonymous sign-in in Firebase Console > Authentication > Sign-in method.";
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            initializeWorkerSession();
+        }
+    });
+
+    // --- INITIAL SESSION BOOTSTRAP ---
+    async function initializeWorkerSession() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramId = urlParams.get('id');
+        if (paramId) {
+            loadWorkerRecord(paramId);
+            return;
+        }
+        try {
+            const q = query(collection(db, COLLECTION_NAME), orderBy("lastModifiedEpoch", "desc"), limit(1));
+            const snap = await getDocs(q);
+            if (!snap.empty) {
+                loadWorkerRecord(snap.docs[0].id);
+                return;
+            }
+        } catch (e) {
+            console.warn("Could not fetch most recent record (collection may be empty):", e);
+        }
+        // Nothing in the database yet — start the very first blank record
+        createNewWorkerRecord(true);
+    }
+
+    // --- RECORD SWITCHING ---
+    function subscribeToRecord(id) {
+        if (unsubscribeSnapshot) unsubscribeSnapshot();
+        currentRecordId = id;
+        docRef = doc(db, COLLECTION_NAME, id);
+        document.getElementById('workmanRecordId').value = id;
+        document.getElementById('assignedEmployeeId').value = id;
+        fileUrlMap = {};
+        syncStatus.innerText = `Status: Loading record ${id}...`;
+
+        unsubscribeSnapshot = onSnapshot(docRef, (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const inboundData = docSnapshot.data();
+                syncStatus.innerText = "Status: Cloud parameters synchronized 🔄";
+
+                Object.keys(inboundData).forEach(fieldName => {
+                    const domNode = document.getElementById(fieldName);
+                    if (domNode && document.activeElement !== domNode) {
+                        domNode.value = inboundData[fieldName];
+                    }
+                });
+
+                if (inboundData.gender === "Male") document.getElementById('genderMale').checked = true;
+                if (inboundData.gender === "Female") document.getElementById('genderFemale').checked = true;
+                if (inboundData.maritalStatus === "Married") document.getElementById('maritalMarried').checked = true;
+                if (inboundData.maritalStatus === "Unmarried") document.getElementById('maritalUnmarried').checked = true;
+
+                if (inboundData.medicalVitals) {
+                    Object.keys(inboundData.medicalVitals).forEach(medParam => {
+                        const vitalInput = document.querySelector(`#medicalTable input[data-med="${medParam}"]`);
+                        if (vitalInput && document.activeElement !== vitalInput) {
+                            vitalInput.value = inboundData.medicalVitals[medParam];
+                        }
+                    });
+                }
+
+                if (inboundData.education) restoreTableRowsMatrix('educationTable', inboundData.education, window.addEducationRow);
+                if (inboundData.experience) restoreTableRowsMatrix('experienceTable', inboundData.experience, window.addExperienceRow);
+                if (inboundData.epfNominees) restoreTableRowsMatrix('epfNomTable', inboundData.epfNominees, window.addEPFRow);
+                if (inboundData.epsFamily) restoreTableRowsMatrix('epsFamTable', inboundData.epsFamily, window.addEPSRow);
+
+                // Restore uploaded document/photo previews from Cloud Storage URLs
+                fileUrlMap = {
+                    photo: inboundData.photoUrl ? { url: inboundData.photoUrl } : undefined,
+                    panFront: inboundData.panFrontUrl ? { url: inboundData.panFrontUrl } : undefined,
+                    panBack: inboundData.panBackUrl ? { url: inboundData.panBackUrl } : undefined,
+                    aadhaarFront: inboundData.aadhaarFrontUrl ? { url: inboundData.aadhaarFrontUrl } : undefined,
+                    aadhaarBack: inboundData.aadhaarBackUrl ? { url: inboundData.aadhaarBackUrl } : undefined,
+                };
+                if (fileUrlMap.photo) {
+                    const img = document.getElementById('photoPreviewImg');
+                    img.src = fileUrlMap.photo.url;
+                    img.style.display = 'block';
+                }
+                renderDocZone('panFrontRenderZone', fileUrlMap.panFront?.url, 'PAN Front Preview');
+                renderDocZone('panBackRenderZone', fileUrlMap.panBack?.url, 'PAN Back Preview');
+                renderDocZone('aadhaarFrontRenderZone', fileUrlMap.aadhaarFront?.url, 'Aadhaar Front Preview');
+                renderDocZone('aadhaarBackRenderZone', fileUrlMap.aadhaarBack?.url, 'Aadhaar Back Preview');
+            } else {
+                syncStatus.innerText = `Status: New record ${id} ready. Fill details to auto-save.`;
+            }
+        }, (err) => {
+            console.error(err);
+            syncStatus.innerText = "Status: Sync error — check Firestore rules / network.";
+        });
+    }
+
+    function renderDocZone(zoneId, url, placeholderText) {
+        const zone = document.getElementById(zoneId);
+        if (!zone) return;
+        if (!url) { zone.innerHTML = placeholderText; return; }
+        if (url.toLowerCase().includes('.pdf')) {
+            zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
+        } else {
+            zone.innerHTML = `<img src="${url}" alt="Attached Identity Document">`;
+        }
+    }
+
+    function resetFormToBlank() {
+        document.getElementById('workmanForm').reset();
+        ['educationTable', 'experienceTable', 'epfNomTable', 'epsFamTable'].forEach(id => {
+            document.querySelector(`#${id} tbody`).innerHTML = '';
+        });
+        document.querySelectorAll('#medicalTable input[data-med]').forEach(el => el.value = '');
+        const img = document.getElementById('photoPreviewImg');
+        img.src = ''; img.style.display = 'none';
+        renderDocZone('panFrontRenderZone', null, 'PAN Front Preview');
+        renderDocZone('panBackRenderZone', null, 'PAN Back Preview');
+        renderDocZone('aadhaarFrontRenderZone', null, 'Aadhaar Front Preview');
+        renderDocZone('aadhaarBackRenderZone', null, 'Aadhaar Back Preview');
+        fileUrlMap = {};
+    }
+
+    // --- WORKER SEARCH / CREATE / LOAD (exposed globally for onclick="") ---
+    window.searchWorkerRecords = async function () {
+        const q = document.getElementById('workerSearchInput').value.trim().toLowerCase();
+        resultsPanel.innerHTML = `<div style="font-size:12px; color:#666;">Searching...</div>`;
+        try {
+            const snap = await getDocs(collection(db, COLLECTION_NAME));
+            allRecordsCache = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        } catch (e) {
+            console.error(e);
+            resultsPanel.innerHTML = `<div style="font-size:12px; color:#dc3545;">Search failed — check Firestore connection/rules.</div>`;
+            return;
+        }
+        const matches = !q ? allRecordsCache : allRecordsCache.filter(r =>
+            [r.id, r.workmanName, r.aadhaarNumber, r.panNumber, r.designation]
+                .some(v => (v || '').toString().toLowerCase().includes(q))
+        );
+        if (matches.length === 0) {
+            resultsPanel.innerHTML = `<div style="font-size:12px; color:#666;">No matching records found.</div>`;
+            return;
+        }
+        resultsPanel.innerHTML = matches.slice(0, 30).map(r => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-bottom:1px solid #eee; font-size:12px;">
+                <span><strong>${r.id}</strong> — ${r.workmanName || '(no name)'} ${r.designation ? '· ' + r.designation : ''}</span>
+                <button type="button" class="btn btn-secondary" style="padding:4px 10px; font-size:11px;" onclick="loadWorkerRecord('${r.id}')">Load</button>
+            </div>
+        `).join('');
+    };
+
+    window.loadWorkerRecord = function (id) {
+        resetFormToBlank();
+        subscribeToRecord(id);
+        resultsPanel.innerHTML = '';
+        document.getElementById('workerSearchInput').value = '';
+        // Reflect the loaded record in the URL so it's shareable/bookmarkable
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', id);
+        window.history.replaceState({}, '', url);
+    };
+
+    async function computeNextRecordId() {
+        try {
+            const snap = await getDocs(collection(db, COLLECTION_NAME));
+            let maxNum = 26000, prefix = "RE", padLen = 5;
+            snap.forEach(d => {
+                const m = d.id.match(/^([A-Za-z]+)(\d+)$/);
+                if (m) {
+                    const num = parseInt(m[2], 10);
+                    if (num >= maxNum) { maxNum = num; prefix = m[1]; padLen = m[2].length; }
+                }
+            });
+            return `${prefix}${String(maxNum + 1).padStart(padLen, '0')}`;
+        } catch (e) {
+            console.error(e);
+            return `RE${Date.now().toString().slice(-6)}`;
+        }
+    }
+
+    window.createNewWorkerRecord = async function (silent) {
+        if (!silent && !confirm("Start a new blank worker record now?")) return;
+        const nextId = await computeNextRecordId();
+        resetFormToBlank();
+        subscribeToRecord(nextId);
+        document.getElementById('contractorName').value = 'Ravi Enterprises';
+        document.getElementById('nationality').value = 'Indian';
+        document.getElementById('genderMale').checked = true;
+        document.getElementById('maritalUnmarried').checked = true;
+        const today = new Date();
+        document.getElementById('doj').value = `${String(today.getDate()).padStart(2,'0')}/${String(today.getMonth()+1).padStart(2,'0')}/${today.getFullYear()}`;
+        const url = new URL(window.location.href);
+        url.searchParams.set('id', nextId);
+        window.history.replaceState({}, '', url);
+        syncStatus.innerText = `Status: New blank record ${nextId} ready. Fill details to auto-save.`;
+    };
+
+    // --- AUTOSAVE (event delegation so dynamically added table rows are covered too) ---
     let debounceTimer;
     function queueAutoSave() {
+        if (!docRef) return;
         syncStatus.innerText = "Status: Typings detected. Syncing...";
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(performFirestoreDatabaseWrite, 1200);
     }
 
-    // Bidirectional Output Generation Map Engine
     async function performFirestoreDatabaseWrite() {
+        if (!docRef) return;
         try {
             const dataPayload = {
                 workmanRecordId: document.getElementById('workmanRecordId').value,
@@ -1043,59 +1271,30 @@
                 skillClass: document.getElementById('skillClass').value,
                 baseWage: document.getElementById('baseWage').value,
                 deploymentZone: document.getElementById('deploymentZone').value,
-                
+
                 education: extractTableRowsArray('educationTable'),
                 experience: extractTableRowsArray('experienceTable'),
                 epfNominees: extractTableRowsArray('epfNomTable'),
                 epsFamily: extractTableRowsArray('epsFamTable'),
-                
+
                 medicalVitals: extractMedicalGridMap(),
+
+                photoUrl: fileUrlMap.photo?.url || '',
+                panFrontUrl: fileUrlMap.panFront?.url || '',
+                panBackUrl: fileUrlMap.panBack?.url || '',
+                aadhaarFrontUrl: fileUrlMap.aadhaarFront?.url || '',
+                aadhaarBackUrl: fileUrlMap.aadhaarBack?.url || '',
+
                 lastModifiedEpoch: new Date().getTime()
             };
 
             await setDoc(docRef, dataPayload, { merge: true });
-            syncStatus.innerText = "Status: Saved Securely to Cloud Firestore ✔️";
-        } catch(ex) {
+            syncStatus.innerText = "Status: Saved securely to Cloud Firestore ✔️";
+        } catch (ex) {
             console.error(ex);
-            syncStatus.innerText = "Status: Storage write error.";
+            syncStatus.innerText = "Status: Storage write error — check Firestore rules / network.";
         }
     }
-
-    // Active Remote Real-time Pipeline Injection
-    onSnapshot(docRef, (docSnapshot) => {
-        if(docSnapshot.exists()) {
-            const inboundData = docSnapshot.data();
-            syncStatus.innerText = "Status: Cloud parameters synchronized 🔄";
-
-            Object.keys(inboundData).forEach(fieldName => {
-                const domNode = document.getElementById(fieldName);
-                if (domNode && document.activeElement !== domNode) {
-                    domNode.value = inboundData[fieldName];
-                }
-            });
-
-            // Parse and apply state logic values
-            if (inboundData.gender === "Male") document.getElementById('genderMale').checked = true;
-            if (inboundData.gender === "Female") document.getElementById('genderFemale').checked = true;
-            if (inboundData.maritalStatus === "Married") document.getElementById('maritalMarried').checked = true;
-            if (inboundData.maritalStatus === "Unmarried") document.getElementById('maritalUnmarried').checked = true;
-
-            if (inboundData.medicalVitals) {
-                Object.keys(inboundData.medicalVitals).forEach(medParam => {
-                    const vitalInput = document.querySelector(`#medicalTable input[data-med="${medParam}"]`);
-                    if (vitalInput && document.activeElement !== vitalInput) {
-                        vitalInput.value = inboundData.medicalVitals[medParam];
-                    }
-                });
-            }
-
-            // Repopulate sub tables safely without layout destruction
-            if (inboundData.education) restoreTableRowsMatrix('educationTable', inboundData.education, addEducationRow);
-            if (inboundData.experience) restoreTableRowsMatrix('experienceTable', inboundData.experience, addExperienceRow);
-            if (inboundData.epfNominees) restoreTableRowsMatrix('epfNomTable', inboundData.epfNominees, addEPFRow);
-            if (inboundData.epsFamily) restoreTableRowsMatrix('epsFamTable', inboundData.epsFamily, addEPSRow);
-        }
-    });
 
     function extractTableRowsArray(id) {
         return Array.from(document.querySelectorAll(`#${id} tbody tr`)).map(tr => {
@@ -1123,47 +1322,92 @@
         return map;
     }
 
-    // Attach immediate input triggers across DOM lifecycle states
-    document.querySelectorAll('input, select, textarea').forEach(inputField => {
-        inputField.addEventListener('input', queueAutoSave);
-        inputField.addEventListener('change', queueAutoSave);
+    // Event delegation covers every input, including rows added later dynamically
+    const formEl = document.getElementById('workmanForm');
+    formEl.addEventListener('input', (e) => {
+        if (e.target.matches('input, select, textarea')) queueAutoSave();
     });
+    formEl.addEventListener('change', (e) => {
+        if (e.target.matches('input, select, textarea')) queueAutoSave();
+    });
+
+    // --- FILE UPLOADS: Firebase Storage (avoids Firestore's 1MB document limit) ---
+    async function uploadFileToStorage(file, fieldKey) {
+        const dataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
+        const path = `${COLLECTION_NAME}/${currentRecordId}/${fieldKey}_${Date.now()}_${file.name}`;
+        const sRef = storageRef(storage, path);
+        await uploadString(sRef, dataUrl, 'data_url');
+        const url = await getDownloadURL(sRef);
+        fileUrlMap[fieldKey] = { url };
+        return { url, dataUrl, type: file.type };
+    }
+
+    window.triggerPhotoUpload = function () { document.getElementById('photoFileInput').click(); };
+
+    window.previewPhoto = async function (input) {
+        const file = input.files[0];
+        if (!file) return;
+        const img = document.getElementById('photoPreviewImg');
+        const localReader = new FileReader();
+        localReader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
+        localReader.readAsDataURL(file);
+
+        syncStatus.innerText = "Status: Uploading photo...";
+        try {
+            const { url } = await uploadFileToStorage(file, 'photo');
+            img.src = url;
+            queueAutoSave();
+        } catch (e) {
+            console.error(e);
+            syncStatus.innerText = "Status: Photo upload failed — check Storage rules.";
+        }
+    };
+
+    window.syncDocumentFile = async function (input, targetZoneId) {
+        const file = input.files[0];
+        const zone = document.getElementById(targetZoneId);
+        if (!file || !zone) return;
+
+        const localReader = new FileReader();
+        localReader.onload = e => {
+            if (file.type.startsWith('image/')) {
+                zone.innerHTML = `<img src="${e.target.result}" alt="Attached Identity Document">`;
+            } else if (file.type === 'application/pdf') {
+                zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`;
+            } else {
+                zone.innerHTML = `<div style="font-size:12px; color:#444;">Attached: ${file.name}</div>`;
+            }
+        };
+        localReader.readAsDataURL(file);
+
+        syncStatus.innerText = `Status: Uploading ${file.name}...`;
+        const fieldKey = targetZoneId.replace('RenderZone', '');
+        try {
+            const { url, type } = await uploadFileToStorage(file, fieldKey);
+            if (type.startsWith('image/')) {
+                zone.innerHTML = `<img src="${url}" alt="Attached Identity Document">`;
+            } else if (type === 'application/pdf') {
+                zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
+            }
+            queueAutoSave();
+        } catch (e) {
+            console.error(e);
+            syncStatus.innerText = `Status: Upload failed for ${file.name} — check Storage rules.`;
+        }
+    };
 </script>
 
 <script>
     let currentPage = 1;
     const totalPages = 7;
 
-    function triggerPhotoUpload() { document.getElementById('photoFileInput').click(); }
-    function previewPhoto(input) {
-        const file = input.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = document.getElementById('photoPreviewImg');
-                img.src = e.target.result; img.style.display = 'block';
-            }
-            reader.readAsDataURL(file);
-        }
-    }
-
-    function syncDocumentFile(input, targetZoneId) {
-        const file = input.files[0];
-        const zone = document.getElementById(targetZoneId);
-        if (file && zone) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (file.type.startsWith('image/')) {
-                    zone.innerHTML = `<img src="${e.target.result}" alt="Attached Identity Document">`;
-                } else if (file.type === 'application/pdf') {
-                    zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`;
-                } else {
-                    zone.innerHTML = `<div style="font-size:12px; color:#444;">Attached: ${file.name}</div>`;
-                }
-            }
-            reader.readAsDataURL(file);
-        }
-    }
+    // triggerPhotoUpload / previewPhoto / syncDocumentFile now live in the Firebase
+    // module script above (they upload to Cloud Storage), and are attached to window.
 
     function addEducationRow() {
         const tbody = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
