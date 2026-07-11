@@ -74,7 +74,7 @@
             align-items: center;
         }
         .worker-list-item:hover {
-            background-color: #f0v4f8;
+            background-color: #f0f4f8;
             color: #002d62;
             font-weight: bold;
         }
@@ -107,6 +107,14 @@
             font-size: 13px;
             margin-top: 15px;
             text-transform: uppercase;
+        }
+        .auto-save-badge {
+            font-size: 11px;
+            color: #28a745;
+            text-align: center;
+            margin-top: 8px;
+            font-weight: bold;
+            display: none;
         }
 
         /* Right Panel - Form Layout */
@@ -493,6 +501,7 @@
             <li style="text-align:center; padding:20px; font-style:italic; color:#666;">Connecting Database...</li>
         </ul>
         <button type="button" class="btn-clear-form" onclick="resetFormToNewEmployee()">+ Register New Worker</button>
+        <div class="auto-save-badge" id="autoSaveBadge">⚡ Form Auto-Saved Locally</div>
     </div>
 
     <div class="container">
@@ -686,15 +695,15 @@
 
             <div class="form-page" id="page6">
                 <div class="vertical-document-stack">
-                    <div class="clean-render-zone" id="aadhaarFrontRenderZone"><div style="font-size:12px;color:#999;">Aadhaar Front Preview View Canvas</div></div>
-                    <div class="clean-render-zone" id="aadhaarBackRenderZone"><div style="font-size:12px;color:#999;">Aadhaar Back Preview View Canvas</div></div>
+                    <div class="clean-render-zone" id="aadhaarFrontRenderZone"></div>
+                    <div class="clean-render-zone" id="aadhaarBackRenderZone"></div>
                 </div>
             </div>
 
             <div class="form-page" id="page7">
                 <div class="vertical-document-stack">
-                    <div class="clean-render-zone" id="panFrontRenderZone"><div style="font-size:12px;color:#999;">PAN Front Preview View Canvas</div></div>
-                    <div class="clean-render-zone" id="panBackRenderZone"><div style="font-size:12px;color:#999;">PAN Back Preview View Canvas</div></div>
+                    <div class="clean-render-zone" id="panFrontRenderZone"></div>
+                    <div class="clean-render-zone" id="panBackRenderZone"></div>
                 </div>
             </div>
 
@@ -715,32 +724,110 @@
     import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
-    // FIXME: Input your own web app variables from your project settings dashboard panel here
-     const firebaseConfig = {
-    apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
-    authDomain: "ravi-enterprises-portal.firebaseapp.com",
-    projectId: "ravi-enterprises-portal",
-    storageBucket: "ravi-enterprises-portal.firebasestorage.app",
-    messagingSenderId: "426112480142",
-    appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
-  };
+    // Configuration keys to enable full Firebase storage sync functionality
+    const firebaseConfig = {
+        apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
+        authDomain: "ravi-enterprises-portal.firebaseapp.com",
+        projectId: "ravi-enterprises-portal",
+        storageBucket: "ravi-enterprises-portal.firebasestorage.app",
+        messagingSenderId: "426112480142",
+        appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
+    };
 
+    let app, db, storage, firebaseEnabled = false;
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const storage = getStorage(app);
+    try {
+        app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        storage = getStorage(app);
+        firebaseEnabled = true;
+    } catch(e) { 
+        console.error("Firebase startup aborted:", e); 
+    }
 
-    // Dynamic global state trackers
     let masterRecordsCache = {};
     window.uploadedFiles = { photo: null, aadhaarFront: null, aadhaarBack: null, panFront: null, panBack: null };
 
-    // File selection listeners
+    // Real-Time LocalStorage Auto-Save Engine
+    function triggerLocalAutoSave() {
+        const currentData = {
+            workmanName: document.getElementById('p1_workmanName').value,
+            doj: document.getElementById('p1_doj').value,
+            contractorName: document.getElementById('p1_contractorName').value,
+            designation: document.getElementById('p1_designation').value,
+            fatherName: document.getElementById('p1_fatherName').value,
+            permanentAddress: document.getElementById('p1_permAddress').value,
+            district: document.getElementById('p1_district').value,
+            state: document.getElementById('p1_state').value,
+            pinCode: document.getElementById('p1_pinCode').value,
+            panNumber: document.getElementById('p2_panNumber').value,
+            aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
+            uanNumber: document.getElementById('p2_uanNumber').value,
+            esicNumber: document.getElementById('p2_esicNumber').value,
+            bloodGroup: document.getElementById('p3_bloodGroup').value,
+            medHeight: document.getElementById('med_height').value,
+            medWeight: document.getElementById('med_weight').value,
+            dailyWage: document.getElementById('p5_dailyWage').value
+        };
+        localStorage.setItem('re_form_autosave', JSON.stringify(currentData));
+        
+        const badge = document.getElementById('autoSaveBadge');
+        if (badge) {
+            badge.style.display = 'block';
+            badge.style.opacity = '1';
+            badge.innerText = "⚡ Form Auto-Saved Locally";
+        }
+    }
+
+    // Bind real-time input listeners to all text fields
+    function bindAutoSaveEvents() {
+        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
+            input.removeEventListener('input', triggerLocalAutoSave);
+            input.addEventListener('input', triggerLocalAutoSave);
+        });
+    }
+
+    // Restore cached data on fresh page reloads
+    window.addEventListener('DOMContentLoaded', () => {
+        bindAutoSaveEvents();
+        const stored = localStorage.getItem('re_form_autosave');
+        if (stored && !document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
+            const data = JSON.parse(stored);
+            document.getElementById('p1_workmanName').value = data.workmanName || "";
+            document.getElementById('p1_doj').value = data.doj || "07/11/2026";
+            document.getElementById('p1_contractorName').value = data.contractorName || "Ravi Enterprises";
+            document.getElementById('p1_designation').value = data.designation || "";
+            document.getElementById('p1_fatherName').value = data.fatherName || "";
+            document.getElementById('p1_permAddress').value = data.permanentAddress || "";
+            document.getElementById('p1_district').value = data.district || "";
+            document.getElementById('p1_state').value = data.state || "";
+            document.getElementById('p1_pinCode').value = data.pinCode || "";
+            document.getElementById('p2_panNumber').value = data.panNumber || "";
+            document.getElementById('p2_aadhaarNumber').value = data.aadhaarNumber || "";
+            document.getElementById('p2_uanNumber').value = data.uanNumber || "";
+            document.getElementById('p2_esicNumber').value = data.esicNumber || "";
+            document.getElementById('p3_bloodGroup').value = data.bloodGroup || "";
+            document.getElementById('med_height').value = data.medHeight || "";
+            document.getElementById('med_weight').value = data.medWeight || "";
+            document.getElementById('p5_dailyWage').value = data.dailyWage || "";
+            
+            const badge = document.getElementById('autoSaveBadge');
+            if (badge) {
+                badge.style.display = 'block';
+                badge.innerText = "⚡ Unsaved progress auto-restored";
+            }
+        }
+    });
+
     window.previewPhoto = function(input) {
         const file = input.files[0];
         if (file) {
             window.uploadedFiles.photo = file;
             const reader = new FileReader();
-            reader.onload = function(e) { document.getElementById('photoPreviewImg').src = e.target.result; document.getElementById('photoPreviewImg').style.display = 'block'; }
+            reader.onload = function(e) { 
+                document.getElementById('photoPreviewImg').src = e.target.result; 
+                document.getElementById('photoPreviewImg').style.display = 'block'; 
+            }
             reader.readAsDataURL(file);
         }
     };
@@ -756,141 +843,174 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                if (file.type.startsWith('image/')) { zone.innerHTML = `<img src="${e.target.result}" alt="Identity Document">`; }
-                else if (file.type === 'application/pdf') { zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`; }
+                if (file.type.startsWith('image/')) { 
+                    zone.innerHTML = `<img src="${e.target.result}" alt="Identity Document">`; 
+                } else if (file.type === 'application/pdf') { 
+                    zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`; 
+                }
             }
             reader.readAsDataURL(file);
         }
     };
 
     async function uploadFileToFirebase(file, path) {
-        if (!file || typeof file === "string") return file || ""; // Return clean if already url path string
+        if (!firebaseEnabled || !file || typeof file === "string") return file || "";
         const storageRef = ref(storage, path);
         const snapshot = await uploadBytes(storageRef, file);
         return await getDownloadURL(snapshot.ref);
     }
 
-    // Write-Mode Submission Target Rule Engine
     window.saveCompleteRecordToFirebase = async function() {
         const recordId = document.getElementById('workmanRecordId').value;
         const submitBtn = document.getElementById('btnNext');
-        submitBtn.innerText = "Uploading Data Matrix...";
+        
+        if (!firebaseEnabled) {
+            let localRecords = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
+            const payload = extractFormPayload(recordId, "");
+            localRecords[recordId] = payload;
+            localStorage.setItem('re_local_db_records', JSON.stringify(localRecords));
+            localStorage.removeItem('re_form_autosave');
+            alert(`Auto-Save Alternate triggered: Record ${recordId} preserved safely inside browser storage!`);
+            rebuildLocalSidebarList();
+            return;
+        }
+
+        submitBtn.innerText = "Syncing with cloud instances...";
         submitBtn.disabled = true;
 
         try {
-            // Upload selected files
             const photoUrl = await uploadFileToFirebase(window.uploadedFiles.photo, `records/${recordId}/profile.jpg`);
             const aadhFrontUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarFront, `records/${recordId}/aadhaar_front.jpg`);
             const aadhBackUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarBack, `records/${recordId}/aadhaar_back.jpg`);
             const panFrontUrl = await uploadFileToFirebase(window.uploadedFiles.panFront, `records/${recordId}/pan_front.jpg`);
             const panBackUrl = await uploadFileToFirebase(window.uploadedFiles.panBack, `records/${recordId}/pan_back.jpg`);
 
-            // Read list rows
-            const educationHistory = [];
-            document.querySelectorAll('#educationTable tbody tr').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if(inputs.length && inputs[0].value) {
-                    educationHistory.push({ level: inputs[0].value, year: inputs[1].value, board: inputs[2].value, location: inputs[3].value });
-                }
-            });
-
-            const epfNominees = [];
-            document.querySelectorAll('#epfNomTable tbody tr').forEach(row => {
-                const inputs = row.querySelectorAll('input');
-                if(inputs.length && inputs[0].value) {
-                    epfNominees.push({ name: inputs[0].value, address: inputs[1].value, relationship: inputs[2].value, dob: inputs[3].value, share: inputs[4].value });
-                }
-            });
-
-            const payload = {
-                recordId,
-                workmanName: document.getElementById('p1_workmanName').value,
-                doj: document.getElementById('p1_doj').value,
-                contractorName: document.getElementById('p1_contractorName').value,
-                designation: document.getElementById('p1_designation').value,
-                fatherName: document.getElementById('p1_fatherName').value,
-                permanentAddress: document.getElementById('p1_permAddress').value,
-                district: document.getElementById('p1_district').value,
-                state: document.getElementById('p1_state').value,
-                pinCode: document.getElementById('p1_pinCode').value,
-                gender: document.getElementById('gender_male').checked ? 'Male' : 'Female',
-                maritalStatus: document.getElementById('marital_married').checked ? 'Married' : 'Unmarried',
-                dob: document.getElementById('p1_dob').value,
-                age: document.getElementById('p1_age').value,
-                nationality: document.getElementById('p1_nationality').value,
-                emergencyName: document.getElementById('p1_emergencyName').value,
-                emergencyMobile: document.getElementById('p1_emergencyMobile').value,
-                educationHistory,
-                epfNominees,
-                compliance: {
-                    panNumber: document.getElementById('p2_panNumber').value,
-                    aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
-                    uanNumber: document.getElementById('p2_uanNumber').value,
-                    esicNumber: document.getElementById('p2_esicNumber').value,
-                },
-                medical: {
-                    bloodGroup: document.getElementById('p3_bloodGroup').value,
-                    height: document.getElementById('med_height').value,
-                    weight: document.getElementById('med_weight').value,
-                    varicose: document.getElementById('med_varicose').value,
-                    seizure: document.getElementById('med_seizure').value
-                },
-                deployment: { dailyWage: document.getElementById('p5_dailyWage').value },
-                urls: { photoUrl, aadhFrontUrl, aadhBackUrl, panFrontUrl, panBackUrl }
-            };
-
+            const payload = extractFormPayload(recordId, { photoUrl, aadhFrontUrl, aadhBackUrl, panFrontUrl, panBackUrl });
             await setDoc(doc(db, "workmen_records", recordId), payload);
-            alert(`Record ${recordId} uploaded successfully to Cloud Firestore database!`);
-            
-            submitBtn.innerText = "Complete & Save";
-            submitBtn.disabled = false;
+            localStorage.removeItem('re_form_autosave');
+            alert(`Record ${recordId} synchronized successfully with Firebase cloud servers!`);
         } catch (err) {
             console.error(err);
-            alert("Error saving record to database instance context.");
+            alert("Firebase connection failure. Saved to alternative fallback storage.");
+            let localRecords = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
+            const payload = extractFormPayload(recordId, "");
+            localRecords[recordId] = payload;
+            localStorage.setItem('re_local_db_records', JSON.stringify(localRecords));
+            localStorage.removeItem('re_form_autosave');
+            rebuildLocalSidebarList();
+        } finally {
             submitBtn.innerText = "Complete & Save";
             submitBtn.disabled = false;
         }
     };
 
-    // Read-Mode Lookup Engine Interface Binding Rules
-    onSnapshot(collection(db, "workmen_records"), (snapshot) => {
+    function extractFormPayload(recordId, urls) {
+        const educationHistory = [];
+        document.querySelectorAll('#educationTable tbody tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            if(inputs.length && inputs[0].value) {
+                educationHistory.push({ level: inputs[0].value, year: inputs[1].value, board: inputs[2].value, location: inputs[3].value });
+            }
+        });
+
+        const epfNominees = [];
+        document.querySelectorAll('#epfNomTable tbody tr').forEach(row => {
+            const inputs = row.querySelectorAll('input');
+            if(inputs.length && inputs[0].value) {
+                epfNominees.push({ name: inputs[0].value, address: inputs[1].value, relationship: inputs[2].value, dob: inputs[3].value, share: inputs[4].value });
+            }
+        });
+
+        return {
+            recordId,
+            workmanName: document.getElementById('p1_workmanName').value,
+            doj: document.getElementById('p1_doj').value,
+            contractorName: document.getElementById('p1_contractorName').value,
+            designation: document.getElementById('p1_designation').value,
+            fatherName: document.getElementById('p1_fatherName').value,
+            permanentAddress: document.getElementById('p1_permAddress').value,
+            district: document.getElementById('p1_district').value,
+            state: document.getElementById('p1_state').value,
+            pinCode: document.getElementById('p1_pinCode').value,
+            gender: document.getElementById('gender_male').checked ? 'Male' : 'Female',
+            maritalStatus: document.getElementById('marital_married').checked ? 'Married' : 'Unmarried',
+            dob: document.getElementById('p1_dob').value,
+            age: document.getElementById('p1_age').value,
+            nationality: document.getElementById('p1_nationality').value,
+            emergencyName: document.getElementById('p1_emergencyName').value,
+            emergencyMobile: document.getElementById('p1_emergencyMobile').value,
+            educationHistory,
+            epfNominees,
+            compliance: {
+                panNumber: document.getElementById('p2_panNumber').value,
+                aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
+                uanNumber: document.getElementById('p2_uanNumber').value,
+                esicNumber: document.getElementById('p2_esicNumber').value,
+            },
+            medical: {
+                bloodGroup: document.getElementById('p3_bloodGroup').value,
+                height: document.getElementById('med_height').value,
+                weight: document.getElementById('med_weight').value,
+                varicose: document.getElementById('med_varicose').value,
+                seizure: document.getElementById('med_seizure').value
+            },
+            deployment: { dailyWage: document.getElementById('p5_dailyWage').value },
+            urls: urls || {}
+        };
+    }
+
+    if (firebaseEnabled) {
+        onSnapshot(collection(db, "workmen_records"), (snapshot) => {
+            const listContainer = document.getElementById('workerList');
+            listContainer.innerHTML = "";
+            masterRecordsCache = {};
+            
+            if(snapshot.empty) {
+                listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;">No records found.</li>`;
+            } else {
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    masterRecordsCache[doc.id] = data;
+                    renderListItem(doc.id, data.workmanName);
+                });
+            }
+            calculateNextAvailableSequenceIndex();
+        });
+    } else {
+        window.addEventListener('load', () => { rebuildLocalSidebarList(); });
+    }
+
+    function rebuildLocalSidebarList() {
         const listContainer = document.getElementById('workerList');
         listContainer.innerHTML = "";
-        masterRecordsCache = {};
-
-        if(snapshot.empty) {
-            listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;">No records found.</li>`;
-            return;
+        masterRecordsCache = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
+        const ids = Object.keys(masterRecordsCache);
+        if(!ids.length) {
+            listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;font-size:11px;">Form Running in Offline Local alternate mode.</li>`;
+        } else {
+            ids.forEach(id => { renderListItem(id, masterRecordsCache[id].workmanName); });
         }
+        calculateNextAvailableSequenceIndex();
+    }
 
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            masterRecordsCache[doc.id] = data;
-
-            const li = document.createElement('li');
-            li.className = "worker-list-item";
-            li.setAttribute("data-id", doc.id);
-            li.innerHTML = `<span>${data.workmanName}</span> <span class="id-badge">${doc.id}</span>`;
-            li.onclick = () => populateFormWithSelectedWorker(doc.id, li);
-            listContainer.appendChild(li);
-        });
-        
-        // Auto calculate next index key code based on cache list range size
-        if(!document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
-            calculateNextAvailableSequenceIndex();
-        }
-    });
+    function renderListItem(id, name) {
+        const listContainer = document.getElementById('workerList');
+        const li = document.createElement('li');
+        li.className = "worker-list-item";
+        li.innerHTML = `<span>${name}</span> <span class="id-badge">${id}</span>`;
+        li.onclick = () => populateFormWithSelectedWorker(id, li);
+        listContainer.appendChild(li);
+    }
 
     function calculateNextAvailableSequenceIndex() {
         const existingIds = Object.keys(masterRecordsCache);
         let nextIndex = existingIds.length + 1;
         let generatedId = `RE26${String(nextIndex).padStart(3, '0')}`;
-        while(existingIds.includes(generatedId)) {
-            nextIndex++;
-            generatedId = `RE26${String(nextIndex).padStart(3, '0')}`;
+        while(existingIds.includes(generatedId)) { nextIndex++; generatedId = `RE26${String(nextIndex).padStart(3, '0')}`; }
+        if(!document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
+            document.getElementById('workmanRecordId').value = generatedId;
+            document.getElementById('assignedEmployeeId').value = generatedId;
         }
-        document.getElementById('workmanRecordId').value = generatedId;
-        document.getElementById('assignedEmployeeId').value = generatedId;
     }
 
     window.resetFormToNewEmployee = function() {
@@ -902,14 +1022,12 @@
         document.getElementById('aadhaarBackRenderZone').innerHTML = "";
         document.getElementById('panFrontRenderZone').innerHTML = "";
         document.getElementById('panBackRenderZone').innerHTML = "";
-        
+        localStorage.removeItem('re_form_autosave');
         document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
         calculateNextAvailableSequenceIndex();
         navigateToPage(1);
-        alert("Form cleared. Ready to onboard new technician.");
     };
 
-    // Populates fields from selected database entry
     function populateFormWithSelectedWorker(recordId, elementRef) {
         document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
         elementRef.classList.add('selected');
@@ -923,7 +1041,7 @@
         
         document.getElementById('p1_workmanName').value = data.workmanName || "";
         document.getElementById('p1_doj').value = data.doj || "";
-        document.getElementById('p1_contractorName').value = data.contractorName || "Ravi Enterprises";
+        document.getElementById('p1_contractorName').value = data.contractorName || "";
         document.getElementById('p1_designation').value = data.designation || "";
         document.getElementById('p1_fatherName').value = data.fatherName || "";
         document.getElementById('p1_permAddress').value = data.permanentAddress || "";
@@ -939,7 +1057,9 @@
         if(data.gender === 'Male') document.getElementById('gender_male').checked = true;
         else document.getElementById('gender_female').checked = true;
 
-        // Populate Statutory fields
+        if(data.maritalStatus === 'Married') document.getElementById('marital_married').checked = true;
+        else document.getElementById('marital_unmarried').checked = true;
+
         if(data.compliance) {
             document.getElementById('p2_panNumber').value = data.compliance.panNumber || "";
             document.getElementById('p2_aadhaarNumber').value = data.compliance.aadhaarNumber || "";
@@ -959,8 +1079,44 @@
             document.getElementById('p5_dailyWage').value = data.deployment.dailyWage || "";
         }
 
-        // Render documents from URLs
-        window.uploadedFiles = { photo: data.urls?.photoUrl || null, aadhaarFront: data.urls?.aadhFrontUrl || null, aadhaarBack: data.urls?.aadhBackUrl || null, panFront: data.urls?.panFrontUrl || null, panBack: data.urls?.panBackUrl || null };
+        // Re-inject dynamic rows for Education if cached data is present
+        const eduTbody = document.querySelector('#educationTable tbody');
+        eduTbody.innerHTML = '';
+        if(data.educationHistory && data.educationHistory.length) {
+            data.educationHistory.forEach(edu => {
+                const row = eduTbody.insertRow();
+                row.innerHTML = `
+                    <td><input type="text" class="edu-field" value="${edu.level || ''}"></td>
+                    <td><input type="text" class="edu-year" value="${edu.year || ''}"></td>
+                    <td><input type="text" class="edu-board" value="${edu.board || ''}"></td>
+                    <td><input type="text" class="edu-loc" value="${edu.location || ''}"></td>
+                    <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                `;
+            });
+        } else {
+            const row = eduTbody.insertRow();
+            row.innerHTML = `<td><input type="text" class="edu-field"></td><td><input type="text" class="edu-year"></td><td><input type="text" class="edu-board"></td><td><input type="text" class="edu-loc"></td><td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>`;
+        }
+
+        // Re-inject dynamic rows for EPF Nominees if cached data is present
+        const epfTbody = document.querySelector('#epfNomTable tbody');
+        epfTbody.innerHTML = '';
+        if(data.epfNominees && data.epfNominees.length) {
+            data.epfNominees.forEach(nom => {
+                const row = epfTbody.insertRow();
+                row.innerHTML = `
+                    <td><input type="text" class="epf-name" value="${nom.name || ''}"></td>
+                    <td><input type="text" class="epf-addr" value="${nom.address || ''}"></td>
+                    <td><input type="text" class="epf-rel" value="${nom.relationship || ''}"></td>
+                    <td><input type="text" class="epf-dob" value="${nom.dob || ''}"></td>
+                    <td><input type="text" class="epf-share" value="${nom.share || ''}"></td>
+                    <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                `;
+            });
+        } else {
+            const row = epfTbody.insertRow();
+            row.innerHTML = `<td><input type="text" class="epf-name"></td><td><input type="text" class="epf-addr"></td><td><input type="text" class="epf-rel"></td><td><input type="text" class="epf-dob"></td><td><input type="text" class="epf-share"></td><td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>`;
+        }
 
         if(data.urls?.photoUrl) {
             document.getElementById('photoPreviewImg').src = data.urls.photoUrl;
@@ -969,21 +1125,31 @@
             document.getElementById('photoPreviewImg').style.display = "none";
         }
 
+        renderSavedUrlToZone(data.urls?.photoUrl, 'photoPreviewImg');
         renderSavedUrlToZone(data.urls?.aadhFrontUrl, 'aadhaarFrontRenderZone');
         renderSavedUrlToZone(data.urls?.aadhBackUrl, 'aadhaarBackRenderZone');
         renderSavedUrlToZone(data.urls?.panFrontUrl, 'panFrontRenderZone');
         renderSavedUrlToZone(data.urls?.panBackUrl, 'panBackRenderZone');
 
+        bindAutoSaveEvents();
         navigateToPage(1);
     }
 
     function renderSavedUrlToZone(url, elementId) {
         const zone = document.getElementById(elementId);
-        if(!url) { zone.innerHTML = ""; return; }
-        if(url.includes('.pdf') || url.includes('application/pdf')) {
-            zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
+        if(!url) { 
+            if(elementId.includes('Zone')) zone.innerHTML = ""; 
+            return; 
+        }
+        if(elementId === 'photoPreviewImg') {
+            zone.src = url;
+            zone.style.display = 'block';
+            return;
+        }
+        if(url.startsWith('data:') || url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || !url.includes('.pdf')) {
+            zone.innerHTML = `<img src="${url}" alt="Identity Document">`;
         } else {
-            zone.innerHTML = `<img src="${url}" alt="Cloud Identity Record Asset Document">`;
+            zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
         }
     }
 
@@ -1012,6 +1178,13 @@
             <td><input type="text" class="edu-loc" placeholder="City/State"></td>
             <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
         `;
+        // Re-bind change listeners to new inputs
+        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
+            input.addEventListener('input', () => {
+                const badge = document.getElementById('autoSaveBadge');
+                if(badge) badge.style.display = 'block';
+            });
+        });
     }
 
     function addEPFRow() {
@@ -1025,6 +1198,13 @@
             <td><input type="text" class="epf-share" placeholder="100%"></td>
             <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
         `;
+        // Re-bind change listeners to new inputs
+        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
+            input.addEventListener('input', () => {
+                const badge = document.getElementById('autoSaveBadge');
+                if(badge) badge.style.display = 'block';
+            });
+        });
     }
 
     function removeTableRow(button) {
