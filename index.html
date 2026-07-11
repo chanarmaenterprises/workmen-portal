@@ -489,7 +489,7 @@
                     <div class="photo-box" onclick="triggerPhotoUpload()">
                         <img id="photoPreviewImg" class="photo-preview" alt="Workman Preview">
                     </div>
-                    <input type="file" id="photoFileInput" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
+                    <input type="file" id="photoFileInput" accept="image/*" capture="environment" style="display: none;" onchange="previewPhoto(this)">
                 </div>
             </div>
 
@@ -652,11 +652,11 @@
                     <div class="dual-upload-container">
                         <div class="file-attachment-row">
                             <span>Front:</span>
-                            <input type="file" id="panFrontInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'panFrontRenderZone')">
+                            <input type="file" id="panFrontInput" accept="image/*,application/pdf" capture="environment" onchange="syncDocumentFile(this, 'panFrontRenderZone')">
                         </div>
                         <div class="file-attachment-row">
                             <span>Back:</span>
-                            <input type="file" id="panBackInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'panBackRenderZone')">
+                            <input type="file" id="panBackInput" accept="image/*,application/pdf" capture="environment" onchange="syncDocumentFile(this, 'panBackRenderZone')">
                         </div>
                     </div>
                 </div>
@@ -666,11 +666,11 @@
                     <div class="dual-upload-container">
                         <div class="file-attachment-row">
                             <span>Front:</span>
-                            <input type="file" id="aadhaarFrontInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'aadhaarFrontRenderZone')">
+                            <input type="file" id="aadhaarFrontInput" accept="image/*,application/pdf" capture="environment" onchange="syncDocumentFile(this, 'aadhaarFrontRenderZone')">
                         </div>
                         <div class="file-attachment-row">
                             <span>Back:</span>
-                            <input type="file" id="aadhaarBackInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'aadhaarBackRenderZone')">
+                            <input type="file" id="aadhaarBackInput" accept="image/*,application/pdf" capture="environment" onchange="syncDocumentFile(this, 'aadhaarBackRenderZone')">
                         </div>
                     </div>
                 </div>
@@ -1296,20 +1296,36 @@
         }
     }
 
+    // Firestore rejects arrays nested inside arrays, so each row is stored as a
+    // named object (map) rather than a positional array of values.
+    const TABLE_COLUMNS = {
+        educationTable: ['education', 'yearPassed', 'board', 'location'],
+        experienceTable: ['orgName', 'siteLocation', 'role', 'wage'],
+        epfNomTable: ['nomineeName', 'address', 'relationship', 'dob', 'sharePercent', 'minorGuardian'],
+        epsFamTable: ['memberName', 'age', 'relationship']
+    };
+
     function extractTableRowsArray(id) {
+        const cols = TABLE_COLUMNS[id] || [];
         return Array.from(document.querySelectorAll(`#${id} tbody tr`)).map(tr => {
-            return Array.from(tr.querySelectorAll('input')).map(inputNode => inputNode.value);
+            const rowObj = {};
+            Array.from(tr.querySelectorAll('input')).forEach((inputNode, idx) => {
+                rowObj[cols[idx] || `col${idx}`] = inputNode.value;
+            });
+            return rowObj;
         });
     }
 
     function restoreTableRowsMatrix(id, rowsData, initializationCallback) {
         const bodyNode = document.querySelector(`#${id} tbody`);
         bodyNode.innerHTML = '';
-        rowsData.forEach(rowCells => {
+        const cols = TABLE_COLUMNS[id] || [];
+        rowsData.forEach(rowObj => {
             initializationCallback();
             const inputs = bodyNode.lastElementChild.querySelectorAll('input');
-            rowCells.forEach((cellVal, index) => {
-                if (inputs[index]) inputs[index].value = cellVal;
+            inputs.forEach((inputNode, idx) => {
+                const key = cols[idx] || `col${idx}`;
+                if (rowObj && rowObj[key] !== undefined) inputNode.value = rowObj[key];
             });
         });
     }
@@ -1332,19 +1348,70 @@
     });
 
     // --- FILE UPLOADS: Firebase Storage (avoids Firestore's 1MB document limit) ---
-    async function uploadFileToStorage(file, fieldKey) {
-        const dataUrl = await new Promise((resolve, reject) => {
+    const MAX_UPLOAD_BYTES = 12 * 1024 * 1024; // 12MB hard cap on the original file (covers most phone camera photos)
+    const MAX_IMAGE_DIMENSION = 1600; // px — plenty sharp for a printed ID card, much faster to upload than a raw 4000px photo
+
+    function readFileAsDataUrl(file) {
+        return new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = e => resolve(e.target.result);
-            reader.onerror = reject;
+            reader.onerror = () => reject(new Error('Could not read the selected file.'));
             reader.readAsDataURL(file);
         });
-        const path = `${COLLECTION_NAME}/${currentRecordId}/${fieldKey}_${Date.now()}_${file.name}`;
+    }
+
+    function loadImage(dataUrl) {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = () => reject(new Error('Could not decode image.'));
+            img.src = dataUrl;
+        });
+    }
+
+    // Downscales large photos client-side before upload — a raw 8-12MB phone photo
+    // becomes a ~300-600KB JPEG, which is dramatically faster on a weak site signal
+    // and still perfectly legible for an ID card. PDFs and already-small images pass through untouched.
+    async function prepareFileForUpload(file) {
+        const rawDataUrl = await readFileAsDataUrl(file);
+        if (!file.type.startsWith('image/')) {
+            return { dataUrl: rawDataUrl, type: file.type, name: file.name };
+        }
+        try {
+            const img = await loadImage(rawDataUrl);
+            const needsResize = img.width > MAX_IMAGE_DIMENSION || img.height > MAX_IMAGE_DIMENSION;
+            const needsCompress = file.size > 1.2 * 1024 * 1024;
+            if (!needsResize && !needsCompress) {
+                return { dataUrl: rawDataUrl, type: file.type, name: file.name };
+            }
+            const scale = Math.min(1, MAX_IMAGE_DIMENSION / Math.max(img.width, img.height));
+            const canvas = document.createElement('canvas');
+            canvas.width = Math.round(img.width * scale);
+            canvas.height = Math.round(img.height * scale);
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+            return { dataUrl: compressedDataUrl, type: 'image/jpeg', name: file.name.replace(/\.[^.]+$/, '') + '.jpg' };
+        } catch (e) {
+            console.warn('Image compression failed, uploading original file instead:', e);
+            return { dataUrl: rawDataUrl, type: file.type, name: file.name };
+        }
+    }
+
+    async function uploadFileToStorage(file, fieldKey) {
+        if (!currentRecordId) {
+            throw new Error('No active worker record yet — wait for the page to finish loading, or create/select a worker first.');
+        }
+        if (file.size > MAX_UPLOAD_BYTES) {
+            throw new Error(`File too large (${(file.size / 1024 / 1024).toFixed(1)}MB). Max ${MAX_UPLOAD_BYTES / 1024 / 1024}MB.`);
+        }
+        const prepared = await prepareFileForUpload(file);
+        const safeName = prepared.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+        const path = `${COLLECTION_NAME}/${currentRecordId}/${fieldKey}_${Date.now()}_${safeName}`;
         const sRef = storageRef(storage, path);
-        await uploadString(sRef, dataUrl, 'data_url');
+        await uploadString(sRef, prepared.dataUrl, 'data_url');
         const url = await getDownloadURL(sRef);
         fileUrlMap[fieldKey] = { url };
-        return { url, dataUrl, type: file.type };
+        return { url, dataUrl: prepared.dataUrl, type: prepared.type };
     }
 
     window.triggerPhotoUpload = function () { document.getElementById('photoFileInput').click(); };
@@ -1353,18 +1420,30 @@
         const file = input.files[0];
         if (!file) return;
         const img = document.getElementById('photoPreviewImg');
+
+        if (file.size > MAX_UPLOAD_BYTES) {
+            syncStatus.innerText = `Status: Photo too large (${(file.size / 1024 / 1024).toFixed(1)}MB, max ${MAX_UPLOAD_BYTES / 1024 / 1024}MB).`;
+            input.value = '';
+            return;
+        }
+
         const localReader = new FileReader();
         localReader.onload = e => { img.src = e.target.result; img.style.display = 'block'; };
         localReader.readAsDataURL(file);
 
+        input.disabled = true;
         syncStatus.innerText = "Status: Uploading photo...";
         try {
             const { url } = await uploadFileToStorage(file, 'photo');
             img.src = url;
             queueAutoSave();
+            syncStatus.innerText = "Status: Photo uploaded ✔️";
         } catch (e) {
             console.error(e);
-            syncStatus.innerText = "Status: Photo upload failed — check Storage rules.";
+            syncStatus.innerText = `Status: Photo upload failed — ${e.message}`;
+        } finally {
+            input.disabled = false;
+            input.value = '';
         }
     };
 
@@ -1372,6 +1451,12 @@
         const file = input.files[0];
         const zone = document.getElementById(targetZoneId);
         if (!file || !zone) return;
+
+        if (file.size > MAX_UPLOAD_BYTES) {
+            syncStatus.innerText = `Status: File too large (${(file.size / 1024 / 1024).toFixed(1)}MB, max ${MAX_UPLOAD_BYTES / 1024 / 1024}MB).`;
+            input.value = '';
+            return;
+        }
 
         const localReader = new FileReader();
         localReader.onload = e => {
@@ -1385,6 +1470,7 @@
         };
         localReader.readAsDataURL(file);
 
+        input.disabled = true;
         syncStatus.innerText = `Status: Uploading ${file.name}...`;
         const fieldKey = targetZoneId.replace('RenderZone', '');
         try {
@@ -1395,9 +1481,13 @@
                 zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
             }
             queueAutoSave();
+            syncStatus.innerText = `Status: ${file.name} uploaded ✔️`;
         } catch (e) {
             console.error(e);
-            syncStatus.innerText = `Status: Upload failed for ${file.name} — check Storage rules.`;
+            syncStatus.innerText = `Status: Upload failed for ${file.name} — ${e.message}`;
+        } finally {
+            input.disabled = false;
+            input.value = '';
         }
     };
 </script>
