@@ -451,7 +451,7 @@
         <li onclick="navigateToPage(7)">Page 7: PAN Doc</li>
     </ul>
 
-    <div id="syncStatus">Status: Synchronizing with database...</div>
+    <div id="syncStatus">Status: Awaiting changes...</div>
 
     <form id="workmanForm">
         
@@ -683,7 +683,7 @@
                     <label>Name of Bank:</label>
                     <input type="text" class="line-input" id="bankName" placeholder="e.g. State Bank of India">
                 </div>
-                <div class="form-group">
+                <div class="branch-name" style="flex: 1; display: flex; flex-direction: column;">
                     <label>Branch Name:</label>
                     <input type="text" class="line-input" id="branchName" placeholder="Branch Location">
                 </div>
@@ -971,38 +971,38 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+    // User Injected Active Firebase Key Matrix
     const firebaseConfig = {
-         apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
-    authDomain: "ravi-enterprises-portal.firebaseapp.com",
-    projectId: "ravi-enterprises-portal",
-    storageBucket: "ravi-enterprises-portal.firebasestorage.app",
-    messagingSenderId: "426112480142",
-    appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
-
+        apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
+        authDomain: "ravi-enterprises-portal.firebaseapp.com",
+        projectId: "ravi-enterprises-portal",
+        storageBucket: "ravi-enterprises-portal.firebasestorage.app",
+        messagingSenderId: "426112480142",
+        appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
     };
 
+    // Initialize App Core Framework Instances
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    const initialIndex = 1;
-    const generatedId = `RE26${String(initialIndex).padStart(3, '0')}`;
-    
-    document.getElementById('workmanRecordId').value = generatedId;
-    document.getElementById('assignedEmployeeId').value = generatedId;
+    const targetRecordId = "RE26001";
+    document.getElementById('workmanRecordId').value = targetRecordId;
+    document.getElementById('assignedEmployeeId').value = targetRecordId;
 
-    const docRef = doc(db, "workmen_records", generatedId);
+    const docRef = doc(db, "workmen_records", targetRecordId);
     const syncStatus = document.getElementById('syncStatus');
 
-    let saveTimeout;
-    function triggerAutoSave() {
-        syncStatus.innerText = "Status: Changes detected. Saving...";
-        clearTimeout(saveTimeout);
-        saveTimeout = setTimeout(saveFormDataToFirestore, 1000);
+    let debounceTimer;
+    function queueAutoSave() {
+        syncStatus.innerText = "Status: Typings detected. Syncing...";
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(performFirestoreDatabaseWrite, 1200);
     }
 
-    async function saveFormDataToFirestore() {
+    // Bidirectional Output Generation Map Engine
+    async function performFirestoreDatabaseWrite() {
         try {
-            const payload = {
+            const dataPayload = {
                 workmanRecordId: document.getElementById('workmanRecordId').value,
                 doj: document.getElementById('doj').value,
                 contractorName: document.getElementById('contractorName').value,
@@ -1044,88 +1044,89 @@
                 baseWage: document.getElementById('baseWage').value,
                 deploymentZone: document.getElementById('deploymentZone').value,
                 
-                education: serializeTable('educationTable'),
-                experience: serializeTable('experienceTable'),
-                epfNominees: serializeTable('epfNomTable'),
-                epsFamily: serializeTable('epsFamTable'),
+                education: extractTableRowsArray('educationTable'),
+                experience: extractTableRowsArray('experienceTable'),
+                epfNominees: extractTableRowsArray('epfNomTable'),
+                epsFamily: extractTableRowsArray('epsFamTable'),
                 
-                medicalVitals: serializeMedicalVitals(),
-                updatedAt: new Date().toISOString()
+                medicalVitals: extractMedicalGridMap(),
+                lastModifiedEpoch: new Date().getTime()
             };
 
-            await setDoc(docRef, payload, { merge: true });
-            syncStatus.innerText = "Status: Live Synced to Firestore ✔️";
-        } catch (error) {
-            console.error(error);
-            syncStatus.innerText = "Status: Sync Error";
+            await setDoc(docRef, dataPayload, { merge: true });
+            syncStatus.innerText = "Status: Saved Securely to Cloud Firestore ✔️";
+        } catch(ex) {
+            console.error(ex);
+            syncStatus.innerText = "Status: Storage write error.";
         }
     }
 
-    onSnapshot(docRef, (snapshot) => {
-        if (snapshot.exists()) {
-            const data = snapshot.data();
-            syncStatus.innerText = "Status: Remote data loaded 🔄";
-            
-            Object.keys(data).forEach(key => {
-                const element = document.getElementById(key);
-                if (element && document.activeElement !== element) {
-                    element.value = data[key];
+    // Active Remote Real-time Pipeline Injection
+    onSnapshot(docRef, (docSnapshot) => {
+        if(docSnapshot.exists()) {
+            const inboundData = docSnapshot.data();
+            syncStatus.innerText = "Status: Cloud parameters synchronized 🔄";
+
+            Object.keys(inboundData).forEach(fieldName => {
+                const domNode = document.getElementById(fieldName);
+                if (domNode && document.activeElement !== domNode) {
+                    domNode.value = inboundData[fieldName];
                 }
             });
 
-            if (data.gender === "Male") document.getElementById('genderMale').checked = true;
-            if (data.gender === "Female") document.getElementById('genderFemale').checked = true;
-            if (data.maritalStatus === "Married") document.getElementById('maritalMarried').checked = true;
-            if (data.maritalStatus === "Unmarried") document.getElementById('maritalUnmarried').checked = true;
+            // Parse and apply state logic values
+            if (inboundData.gender === "Male") document.getElementById('genderMale').checked = true;
+            if (inboundData.gender === "Female") document.getElementById('genderFemale').checked = true;
+            if (inboundData.maritalStatus === "Married") document.getElementById('maritalMarried').checked = true;
+            if (inboundData.maritalStatus === "Unmarried") document.getElementById('maritalUnmarried').checked = true;
 
-            if (data.medicalVitals) {
-                Object.keys(data.medicalVitals).forEach(medKey => {
-                    const input = document.querySelector(`#medicalTable input[data-med="${medKey}"]`);
-                    if (input && document.activeElement !== input) {
-                        input.value = data.medicalVitals[medKey];
+            if (inboundData.medicalVitals) {
+                Object.keys(inboundData.medicalVitals).forEach(medParam => {
+                    const vitalInput = document.querySelector(`#medicalTable input[data-med="${medParam}"]`);
+                    if (vitalInput && document.activeElement !== vitalInput) {
+                        vitalInput.value = inboundData.medicalVitals[medParam];
                     }
                 });
             }
 
-            if (data.education) deserializeTable('educationTable', data.education, addEducationRow);
-            if (data.experience) deserializeTable('experienceTable', data.experience, addExperienceRow);
-            if (data.epfNominees) deserializeTable('epfNomTable', data.epfNominees, addEPFRow);
-            if (data.epsFamily) deserializeTable('epsFamTable', data.epsFamily, addEPSRow);
+            // Repopulate sub tables safely without layout destruction
+            if (inboundData.education) restoreTableRowsMatrix('educationTable', inboundData.education, addEducationRow);
+            if (inboundData.experience) restoreTableRowsMatrix('experienceTable', inboundData.experience, addExperienceRow);
+            if (inboundData.epfNominees) restoreTableRowsMatrix('epfNomTable', inboundData.epfNominees, addEPFRow);
+            if (inboundData.epsFamily) restoreTableRowsMatrix('epsFamTable', inboundData.epsFamily, addEPSRow);
         }
     });
 
-    function serializeTable(tableId) {
-        return Array.from(document.querySelectorAll(`#${tableId} tbody tr`)).map(row => {
-            return Array.from(row.querySelectorAll('input')).map(i => i.value);
+    function extractTableRowsArray(id) {
+        return Array.from(document.querySelectorAll(`#${id} tbody tr`)).map(tr => {
+            return Array.from(tr.querySelectorAll('input')).map(inputNode => inputNode.value);
         });
     }
 
-    function deserializeTable(tableId, dataMatrix, addRowFn) {
-        const tbody = document.querySelector(`#${tableId} tbody`);
-        tbody.innerHTML = '';
-        dataMatrix.forEach(rowData => {
-            addRowFn();
-            const lastRow = tbody.lastElementChild;
-            const inputs = lastRow.querySelectorAll('input');
-            rowData.forEach((val, idx) => {
-                if (inputs[idx]) inputs[idx].value = val;
+    function restoreTableRowsMatrix(id, rowsData, initializationCallback) {
+        const bodyNode = document.querySelector(`#${id} tbody`);
+        bodyNode.innerHTML = '';
+        rowsData.forEach(rowCells => {
+            initializationCallback();
+            const inputs = bodyNode.lastElementChild.querySelectorAll('input');
+            rowCells.forEach((cellVal, index) => {
+                if (inputs[index]) inputs[index].value = cellVal;
             });
         });
     }
 
-    function serializeMedicalVitals() {
-        const vitals = {};
-        document.querySelectorAll('#medicalTable input[data-med]').forEach(input => {
-            vitals[input.getAttribute('data-med')] = input.value;
+    function extractMedicalGridMap() {
+        const map = {};
+        document.querySelectorAll('#medicalTable input[data-med]').forEach(el => {
+            map[el.getAttribute('data-med')] = el.value;
         });
-        return vitals;
+        return map;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('input, select, textarea').forEach(el => {
-            el.addEventListener('input', triggerAutoSave);
-            el.addEventListener('change', triggerAutoSave);
-        });
+    // Attach immediate input triggers across DOM lifecycle states
+    document.querySelectorAll('input, select, textarea').forEach(inputField => {
+        inputField.addEventListener('input', queueAutoSave);
+        inputField.addEventListener('change', queueAutoSave);
     });
 </script>
 
@@ -1229,6 +1230,7 @@
         document.getElementById(`page${currentPage}`).classList.add('active');
         document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.add('active');
         
+        // Dynamic Navigation Action State Engine Configuration
         document.getElementById('btnPrev').style.display = currentPage === 1 ? 'none' : 'inline-block';
         document.getElementById('btnNext').innerText = currentPage === totalPages ? 'Complete & Save' : 'Next Step \u2192';
     }
