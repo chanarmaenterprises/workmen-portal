@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Workmens Record Management System - Ravi Enterprises</title>
+    <title>Workmens Record - Ravi Enterprises</title>
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -15,118 +15,14 @@
             padding: 20px;
             color: #000;
         }
-        
-        /* Dashboard Split Window Core Layout */
-        .dashboard-wrapper {
-            display: flex;
-            max-width: 1250px;
-            margin: 0 auto;
-            gap: 25px;
-        }
-        
-        /* Left Panel - Live Employee Registry */
-        .registry-sidebar {
-            width: 320px;
-            background: #ffffff;
-            border-radius: 4px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            height: calc(100vh - 40px);
-            position: sticky;
-            top: 20px;
-            display: flex;
-            flex-direction: column;
-        }
-        .sidebar-title {
-            font-size: 15px;
-            font-weight: bold;
-            color: #002d62;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-            border-bottom: 2px solid #002d62;
-            padding-bottom: 6px;
-        }
-        .search-box {
-            width: 100%;
-            padding: 8px 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 13px;
-            margin-bottom: 15px;
-            outline: none;
-        }
-        .worker-list-container {
-            flex: 1;
-            overflow-y: auto;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .worker-list-item {
-            padding: 10px 12px;
-            border-bottom: 1px solid #eee;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.2s ease;
-            border-radius: 3px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .worker-list-item:hover {
-            background-color: #f0f4f8;
-            color: #002d62;
-            font-weight: bold;
-        }
-        .worker-list-item.selected {
-            background-color: #002d62;
-            color: #ffffff;
-            font-weight: bold;
-        }
-        .id-badge {
-            font-size: 11px;
-            background: #eee;
-            color: #333;
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-weight: normal;
-        }
-        .worker-list-item.selected .id-badge {
-            background: rgba(255,255,255,0.2);
-            color: #fff;
-        }
-        .btn-clear-form {
-            width: 100%;
-            padding: 10px;
-            background: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 13px;
-            margin-top: 15px;
-            text-transform: uppercase;
-        }
-        .auto-save-badge {
-            font-size: 11px;
-            color: #28a745;
-            text-align: center;
-            margin-top: 8px;
-            font-weight: bold;
-            display: none;
-        }
-
-        /* Right Panel - Form Layout */
         .container {
-            flex: 1;
+            max-width: 850px;
+            margin: 0 auto;
             background: #ffffff;
             padding: 30px 40px;
             border-radius: 4px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
-        
-        /* Header Formatting */
         .header-main {
             text-align: center;
         }
@@ -147,8 +43,6 @@
             border-bottom: 2px solid #002d62;
             margin: 12px 0 25px 0;
         }
-        
-        /* Layout Grid System */
         .top-section-grid {
             display: flex;
             justify-content: space-between;
@@ -179,8 +73,6 @@
             background: transparent;
             width: 130px;
         }
-        
-        /* Photo Frame Mechanics */
         .photo-box {
             width: 125px;
             height: 165px;
@@ -199,8 +91,6 @@
             object-fit: cover;
             display: none;
         }
-        
-        /* Master Progress Tracking Indicator */
         .wizard-progress {
             display: flex;
             justify-content: space-between;
@@ -227,15 +117,12 @@
             color: #fff;
             border-radius: 2px;
         }
-
         .form-page {
             display: none;
         }
         .form-page.active {
             display: block;
         }
-
-        /* Section Titles */
         .section-title {
             font-size: 13px;
             font-weight: bold;
@@ -253,7 +140,6 @@
             background-color: #000;
             margin-right: 8px;
         }
-        
         .form-row {
             display: flex;
             gap: 25px;
@@ -266,7 +152,6 @@
             position: relative;
         }
         .form-group.flex-2 { flex: 2; }
-        
         label {
             font-size: 12px;
             color: #222;
@@ -284,7 +169,6 @@
         .line-input:focus {
             outline: none;
         }
-        
         .dual-upload-container {
             display: flex;
             flex-direction: column;
@@ -305,8 +189,6 @@
         .file-attachment-row input[type="file"] {
             font-size: 11px;
         }
-
-        /* Stacked Vertical Document Canvas Style Layout */
         .vertical-document-stack {
             display: flex;
             flex-direction: column;
@@ -322,6 +204,8 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            border: 1px dashed #ccc;
+            min-height: 150px;
         }
         .clean-render-zone img {
             width: 100%;
@@ -335,8 +219,6 @@
             height: 380px;
             border: none;
         }
-
-        /* Table Optimization */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -387,7 +269,6 @@
             font-weight: bold;
             font-size: 14px;
         }
-
         .radio-options {
             display: flex;
             gap: 20px;
@@ -401,7 +282,6 @@
             cursor: pointer;
             font-size: 12px;
         }
-
         .official-badge-panel {
             border: 2px dashed #002d62;
             padding: 20px;
@@ -426,8 +306,6 @@
             color: #111;
             margin-bottom: 20px;
         }
-
-        /* Form Submissions Control Strip */
         .action-container {
             display: flex;
             justify-content: space-between;
@@ -455,6 +333,13 @@
             margin-bottom: 10px;
             display: inline-block;
         }
+        #syncStatus {
+            font-size: 12px;
+            font-weight: bold;
+            color: #002d62;
+            margin-top: 10px;
+            text-align: right;
+        }
 
         @media print {
             @page {
@@ -465,12 +350,8 @@
                 background-color: #fff;
                 padding: 0;
                 margin: 0;
-            }
-            .registry-sidebar {
-                display: none !important;
-            }
-            .dashboard-wrapper {
-                display: block;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
             }
             .container {
                 box-shadow: none;
@@ -478,688 +359,716 @@
                 max-width: 100%;
                 width: 100%;
             }
-            .wizard-progress, .action-container, .btn-add-row, .btn-table-action, .dual-upload-container {
+            .wizard-progress, .action-container, .btn-add-row, .btn-table-action, .dual-upload-container, #syncStatus {
                 display: none !important;
             }
-            body:not(.print-all-mode) .form-page { display: none !important; }
-            body:not(.print-all-mode) .form-page.active { display: block !important; }
-            body.print-all-mode .form-page { display: block !important; page-break-after: always; page-break-inside: avoid; }
-            body.print-all-mode .form-page:last-of-type { page-break-after: avoid; }
-            .line-input, .meta-inline-item input { border: none !important; border-bottom: 1px solid #000 !important; background: transparent !important; }
-            .clean-render-zone img { max-height: 380px !important; }
+            body:not(.print-all-mode) .form-page {
+                display: none !important;
+            }
+            body:not(.print-all-mode) .form-page.active {
+                display: block !important;
+                page-break-after: avoid;
+                page-break-inside: avoid;
+            }
+            body.print-all-mode .form-page {
+                display: block !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+            }
+            body.print-all-mode .form-page:last-of-type {
+                page-break-after: avoid;
+            }
+            .line-input, .meta-inline-item input {
+                border: none !important;
+                border-bottom: 1px solid #000 !important;
+                box-shadow: none !important;
+                padding: 2px 0 !important;
+                background: transparent !important;
+            }
+            th {
+                background-color: #f5f5f5 !important;
+                border: 1px solid #000 !important;
+            }
+            table, td {
+                border: 1px solid #000 !important;
+                background-color: transparent !important;
+            }
+            .official-badge-panel {
+                border: 2px solid #002d62 !important;
+                background-color: transparent !important;
+            }
+            .clean-render-zone img {
+                max-height: 380px !important;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="dashboard-wrapper">
-    
-    <div class="registry-sidebar">
-        <div class="sidebar-title">Live Worker Registry</div>
-        <input type="text" class="search-box" id="sidebarSearch" placeholder="🔍 Search worker by name..." oninput="filterSidebarList()">
-        <ul class="worker-list-container" id="workerList">
-            <li style="text-align:center; padding:20px; font-style:italic; color:#666;">Connecting Database...</li>
-        </ul>
-        <button type="button" class="btn-clear-form" onclick="resetFormToNewEmployee()">+ Register New Worker</button>
-        <div class="auto-save-badge" id="autoSaveBadge">⚡ Form Auto-Saved Locally</div>
+<div class="container">
+    <div class="header-main">
+        <h1>Workmens Record</h1>
+        <p>Annexure - XV &bull; (Engaged by Registered / Non Registered Contractor)</p>
     </div>
+    <div class="header-line"></div>
 
-    <div class="container">
-        <div class="header-main">
-            <h1>Workmens Record</h1>
-            <p>Annexure - XV &bull; Ravi Enterprises Operational Records Database</p>
+    <ul class="wizard-progress" id="wizardProgress">
+        <li class="active" onclick="navigateToPage(1)">Page 1: Profile Master</li>
+        <li onclick="navigateToPage(2)">Page 2: KYC & Bank Details</li>
+        <li onclick="navigateToPage(3)">Page 3: Medical Records</li>
+        <li onclick="navigateToPage(4)">Page 4: EPF Nomination</li>
+        <li onclick="navigateToPage(5)">Page 5: Employment Roll</li>
+        <li onclick="navigateToPage(6)">Page 6: Aadhaar Doc</li>
+        <li onclick="navigateToPage(7)">Page 7: PAN Doc</li>
+    </ul>
+
+    <div id="syncStatus">Status: Awaiting changes...</div>
+
+    <form id="workmanForm">
+        <div class="form-page active" id="page1">
+            <div class="top-section-grid">
+                <div class="meta-inputs">
+                    <div class="meta-inline-row">
+                        <div class="meta-inline-item">
+                            Workmens Record ID: <input type="text" id="workmanRecordId" value="RE26001" readonly>
+                        </div>
+                        <div class="meta-inline-item">
+                            DOJ: <input type="text" id="doj" value="07/11/2026">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label>Name of the Contractor / Sub-contractor:</label>
+                        <input type="text" class="line-input" id="contractorName" value="Ravi Enterprises">
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name of the Workman:</label>
+                        <input type="text" class="line-input" id="workmanName" value="Om prakash">
+                    </div>
+                </div>
+
+                <div class="photo-frame-container">
+                    <div class="photo-box" onclick="triggerPhotoUpload()">
+                        <img id="photoPreviewImg" class="photo-preview" alt="Workman Preview">
+                    </div>
+                    <input type="file" id="photoFileInput" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
+                </div>
+            </div>
+
+            <div class="section-title">Profile Details</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Designation:</label>
+                    <input type="text" class="line-input" id="designation" value="Unfilled">
+                </div>
+                <div class="form-group">
+                    <label>Father / Husband's Name:</label>
+                    <input type="text" class="line-input" id="fatherName" value="Seetaram">
+                </div>
+            </div>
+            
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Permanent Address:</label>
+                <input type="text" class="line-input" id="permAddress" value="S/o Seetaram, dhanni purwa, post chahalwa, Chahalwa">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>District:</label>
+                    <input type="text" class="line-input" id="district" value="Shrawasti">
+                </div>
+                <div class="form-group">
+                    <label>State:</label>
+                    <input type="text" class="line-input" id="state" value="Uttar pradesh">
+                </div>
+                <div class="form-group">
+                    <label>Pin Code:</label>
+                    <input type="text" class="line-input" id="pinCode" value="271831">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Present Address (Line 1):</label>
+                <input type="text" class="line-input" id="presentAddr1" placeholder="House No., Building Name, Sector or Area block details">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Present Address (Line 2):</label>
+                <input type="text" class="line-input" id="presentAddr2" placeholder="Landmark reference, City/Town, State region location">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Gender:</label>
+                    <div class="radio-options">
+                        <label><input type="radio" name="gender_p1" id="genderMale" value="Male" checked> Male</label>
+                        <label><input type="radio" name="gender_p1" id="genderFemale" value="Female"> Female</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Marital Status:</label>
+                    <div class="radio-options">
+                        <label><input type="radio" name="marital_p1" id="maritalMarried" value="Married"> Married</label>
+                        <label><input type="radio" name="marital_p1" id="maritalUnmarried" value="Unmarried" checked> Unmarried</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>No. of Children:</label>
+                    <input type="text" class="line-input" id="childrenCount" value="2">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>DOB (dd/mm/yy):</label>
+                    <input type="text" class="line-input" id="dob" value="14/05/1999">
+                </div>
+                <div class="form-group">
+                    <label>Age (Yrs):</label>
+                    <input type="text" class="line-input" id="age" value="27">
+                </div>
+                <div class="form-group">
+                    <label>Nationality:</label>
+                    <input type="text" class="line-input" id="nationality" value="Indian">
+                </div>
+            </div>
+
+            <div class="section-title">Emergency Contact Details</div>
+            <div class="form-row">
+                <div class="form-group flex-2">
+                    <label>Name of Contact Person:</label>
+                    <input type="text" class="line-input" id="emergencyName" value="Chintu lal">
+                </div>
+                <div class="form-group">
+                    <label>Relationship:</label>
+                    <input type="text" class="line-input" id="emergencyRelation" value="Brother">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mobile Number:</label>
+                    <input type="text" class="line-input" id="emergencyMobile" value="6393160940">
+                </div>
+                <div class="form-group flex-2">
+                    <label>Address:</label>
+                    <input type="text" class="line-input" id="emergencyAddress" value="dhanni purwa Shrawasti U.P 271831">
+                </div>
+            </div>
+
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Education History</span>
+                <button type="button" class="btn btn-add-row" onclick="addEducationRow()">+ Add Education</button>
+            </div>
+            <table id="educationTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30%;">Education</th>
+                        <th style="width: 20%;">Passed on (Year)</th>
+                        <th style="width: 25%;">School / Board</th>
+                        <th style="width: 20%;">Location</th>
+                        <th class="btn-table-action" style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="e.g. Matriculation"></td>
+                        <td><input type="text" placeholder="Year"></td>
+                        <td><input type="text" placeholder="Board Name"></td>
+                        <td><input type="text" placeholder="City/State"></td>
+                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Previous Work Experience</span>
+                <button type="button" class="btn btn-add-row" onclick="addExperienceRow()">+ Add Experience</button>
+            </div>
+            <table id="experienceTable">
+                <thead>
+                    <tr>
+                        <th style="width: 35%;">Name of Contractor & Org</th>
+                        <th style="width: 25%;">Project Site</th>
+                        <th style="width: 20%;">Designation</th>
+                        <th style="width: 15%;">Salary PM / Wage</th>
+                        <th class="btn-table-action" style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Contractor/Org"></td>
+                        <td><input type="text" placeholder="Site Location"></td>
+                        <td><input type="text" placeholder="Role"></td>
+                        <td><input type="text" placeholder="Amount"></td>
+                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        <div class="header-line"></div>
 
-        <ul class="wizard-progress" id="wizardProgress">
-            <li class="active" onclick="navigateToPage(1)">Page 1: Profile Master</li>
-            <li onclick="navigateToPage(2)">Page 2: KYC & Bank Details</li>
-            <li onclick="navigateToPage(3)">Page 3: Medical Records</li>
-            <li onclick="navigateToPage(4)">Page 4: EPF Nomination</li>
-            <li onclick="navigateToPage(5)">Page 5: Employment Roll</li>
-            <li onclick="navigateToPage(6)">Page 6: Aadhaar Doc</li>
-            <li onclick="navigateToPage(7)">Page 7: PAN Doc</li>
-        </ul>
-
-        <form id="workmanForm">
-            <div class="form-page active" id="page1">
-                <div class="top-section-grid">
-                    <div class="meta-inputs">
-                        <div class="meta-inline-row">
-                            <div class="meta-inline-item">
-                                Workmens Record ID: <input type="text" id="workmanRecordId" value="RE26001" readonly>
-                            </div>
-                            <div class="meta-inline-item">
-                                DOJ: <input type="text" id="p1_doj" value="07/11/2026">
-                            </div>
+        <div class="form-page" id="page2">
+            <div class="section-title">Statutory Compliance Details</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>PAN Number:</label>
+                    <input type="text" class="line-input" id="panNumber" placeholder="ABCDE1234F">
+                    <div class="dual-upload-container">
+                        <div class="file-attachment-row">
+                            <span>Front:</span>
+                            <input type="file" id="panFrontInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'panFrontRenderZone')">
                         </div>
-                        <div class="form-group" style="margin-bottom: 12px;">
-                            <label>Name of the Contractor / Sub-contractor:</label>
-                            <input type="text" id="p1_contractorName" class="line-input" value="Ravi Enterprises">
-                        </div>
-                        <div class="form-group">
-                            <label>Full Name of the Workman:</label>
-                            <input type="text" id="p1_workmanName" class="line-input" value="Om prakash">
-                        </div>
-                    </div>
-                    <div class="photo-frame-container">
-                        <div class="photo-box" onclick="triggerPhotoUpload()">
-                            <img id="photoPreviewImg" class="photo-preview" alt="Workman Preview">
-                        </div>
-                        <input type="file" id="photoFileInput" accept="image/*" style="display: none;" onchange="previewPhoto(this)">
-                    </div>
-                </div>
-
-                <div class="section-title">Profile Details</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Designation:</label>
-                        <input type="text" id="p1_designation" class="line-input" value="Technician Helper">
-                    </div>
-                    <div class="form-group">
-                        <label>Father / Husband's Name:</label>
-                        <input type="text" id="p1_fatherName" class="line-input" value="Seetaram">
-                    </div>
-                </div>
-                <div class="form-group" style="margin-bottom: 12px;">
-                    <label>Permanent Address:</label>
-                    <input type="text" id="p1_permAddress" class="line-input" value="S/o Seetaram, dhanni purwa, post chahalwa, Chahalwa">
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>District:</label>
-                        <input type="text" id="p1_district" class="line-input" value="Shrawasti">
-                    </div>
-                    <div class="form-group">
-                        <label>State:</label>
-                        <input type="text" id="p1_state" class="line-input" value="Uttar pradesh">
-                    </div>
-                    <div class="form-group">
-                        <label>Pin Code:</label>
-                        <input type="text" id="p1_pinCode" class="line-input" value="271831">
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group"><label>Gender:</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="gender_p1" id="gender_male" checked> Male</label>
-                            <label><input type="radio" name="gender_p1" id="gender_female"> Female</label>
-                        </div>
-                    </div>
-                    <div class="form-group"><label>Marital Status:</label>
-                        <div class="radio-options">
-                            <label><input type="radio" name="marital_p1" id="marital_married"> Married</label>
-                            <label><input type="radio" name="marital_p1" id="marital_unmarried" checked> Unmarried</label>
+                        <div class="file-attachment-row">
+                            <span>Back:</span>
+                            <input type="file" id="panBackInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'panBackRenderZone')">
                         </div>
                     </div>
                 </div>
-                <div class="form-row">
-                    <div class="form-group"><label>DOB (dd/mm/yy):</label><input type="text" id="p1_dob" class="line-input" value="14/05/1999"></div>
-                    <div class="form-group"><label>Age (Yrs):</label><input type="text" id="p1_age" class="line-input" value="27"></div>
-                    <div class="form-group"><label>Nationality:</label><input type="text" id="p1_nationality" class="line-input" value="Indian"></div>
+                <div class="form-group">
+                    <label>Aadhaar Number:</label>
+                    <input type="text" class="line-input" id="aadhaarNumber" placeholder="0000 0000 0000">
+                    <div class="dual-upload-container">
+                        <div class="file-attachment-row">
+                            <span>Front:</span>
+                            <input type="file" id="aadhaarFrontInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'aadhaarFrontRenderZone')">
+                        </div>
+                        <div class="file-attachment-row">
+                            <span>Back:</span>
+                            <input type="file" id="aadhaarBackInput" accept="image/*,application/pdf" onchange="syncDocumentFile(this, 'aadhaarBackRenderZone')">
+                        </div>
+                    </div>
                 </div>
-                
-                <div class="section-title">Emergency Contacts</div>
-                <div class="form-row">
-                    <div class="form-group flex-2"><label>Name:</label><input type="text" id="p1_emergencyName" class="line-input" value="Chintu lal"></div>
-                    <div class="form-group"><label>Mobile:</label><input type="text" id="p1_emergencyMobile" class="line-input" value="6393160940"></div>
-                </div>
-
-                <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span>Education History</span><button type="button" class="btn btn-add-row" onclick="addEducationRow()">+ Add Row</button>
-                </div>
-                <table id="educationTable">
-                    <thead><tr><th>Education</th><th>Year</th><th>School/Board</th><th>Location</th><th class="btn-table-action"></th></tr></thead>
-                    <tbody><tr>
-                        <td><input type="text" class="edu-field" placeholder="e.g. Matriculation"></td>
-                        <td><input type="text" class="edu-year" placeholder="Year"></td>
-                        <td><input type="text" class="edu-board" placeholder="Board Name"></td>
-                        <td><input type="text" class="edu-loc" placeholder="City/State"></td>
-                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
-                    </tr></tbody>
-                </table>
             </div>
-
-            <div class="form-page" id="page2">
-                <div class="section-title">Statutory Compliance Details</div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>PAN Number:</label><input type="text" id="p2_panNumber" class="line-input" placeholder="ABCDE1234F">
-                        <div class="dual-upload-container">
-                            <div class="file-attachment-row"><span>Front:</span><input type="file" id="panFrontInput" onchange="syncDocumentFile(this, 'panFrontRenderZone')"></div>
-                            <div class="file-attachment-row"><span>Back:</span><input type="file" id="panBackInput" onchange="syncDocumentFile(this, 'panBackRenderZone')"></div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Aadhaar Number:</label><input type="text" id="p2_aadhaarNumber" class="line-input" placeholder="0000 0000 0000">
-                        <div class="dual-upload-container">
-                            <div class="file-attachment-row"><span>Front:</span><input type="file" id="aadhaarFrontInput" onchange="syncDocumentFile(this, 'aadhaarFrontRenderZone')"></div>
-                            <div class="file-attachment-row"><span>Back:</span><input type="file" id="aadhaarBackInput" onchange="syncDocumentFile(this, 'aadhaarBackRenderZone')"></div>
-                        </div>
-                    </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>UAN Number (PF):</label>
+                    <input type="text" class="line-input" id="uanNumber" placeholder="10XXXXXXXXXX">
                 </div>
-                <div class="form-row">
-                    <div class="form-group"><label>UAN Number (PF):</label><input type="text" id="p2_uanNumber" class="line-input" placeholder="10XXXXXXXXXX"></div>
-                    <div class="form-group"><label>ESIC Number:</label><input type="text" id="p2_esicNumber" class="line-input" placeholder="XXXXXXXXXX"></div>
-                </div>
-                <div class="section-title">Bank Details</div>
-                <div class="form-row">
-                    <div class="form-group"><label>IFSC Code:</label><input type="text" id="p2_ifscCode" class="line-input" placeholder="SBIN0001234"></div>
-                    <div class="form-group"><label>Account Number:</label><input type="text" id="p2_accountNumber" class="line-input" value="1284082283"></div>
+                <div class="form-group">
+                    <label>ESIC Number:</label>
+                    <input type="text" class="line-input" id="esicNumber" placeholder="XXXXXXXXXX">
                 </div>
             </div>
 
-            <div class="form-page" id="page3">
-                <div class="section-title">Medical Examination parameter details</div>
-                <div class="form-group" style="margin-bottom: 15px;"><label>Blood Group:</label><input type="text" id="p3_bloodGroup" class="line-input" style="width: 30%;" value="O+"></div>
-                <table>
-                    <thead><tr><th colspan="2">Diagnostics</th><th colspan="2">Medical History Check</th></tr></thead>
-                    <tbody>
-                        <tr>
-                            <td class="param-label">Height</td><td><input type="text" id="med_height" value="168 cm"></td>
-                            <td class="param-label">Varicose</td><td><input type="text" id="med_varicose" value="Normal"></td>
-                        </tr>
-                        <tr>
-                            <td class="param-label">Weight</td><td><input type="text" id="med_weight" value="62 kg"></td>
-                            <td class="param-label">Seizure</td><td><input type="text" id="med_seizure" value="No History"></td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="section-title">Bank Account Details</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Name of Bank:</label>
+                    <input type="text" class="line-input" id="bankName" placeholder="e.g. State Bank of India">
+                </div>
+                <div class="form-group">
+                    <label>Branch Name:</label>
+                    <input type="text" class="line-input" id="branchName" placeholder="Branch Location">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>IFSC Code:</label>
+                    <input type="text" class="line-input" id="ifscCode" placeholder="SBIN0001234">
+                </div>
+                <div class="form-group">
+                    <label>Account Number:</label>
+                    <input type="text" class="line-input" id="accountNumber" value="1284082283">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Mobile Number (Linked to Bank):</label>
+                    <input type="text" class="line-input" id="bankMobile" value="6393160940">
+                </div>
+                <div class="form-group">
+                    <label>UPI ID:</label>
+                    <input type="text" class="line-input" id="upiId" placeholder="worker@upi">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-page" id="page3">
+            <div class="section-title">Medical Examination for all workmen</div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Blood Group:</label>
+                <input type="text" class="line-input" style="width: 30%;" id="bloodGroup" placeholder="e.g. O Positive">
             </div>
 
-            <div class="form-page" id="page4">
-                <div class="section-title">EPF Nomination Declaration (Form 2)</div>
+            <table id="medicalTable">
+                <thead>
+                    <tr>
+                        <th colspan="2" style="width: 50%; text-align: center; border-right: 2px solid #000;">Diagnostic / Vitals Check</th>
+                        <th colspan="2" style="width: 50%; text-align: center;">Systemic / Medical History Check</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="param-label">a) Height</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="height" placeholder="e.g. 170 cm"></td>
+                        <td class="param-label">a) Varicose</td>
+                        <td class="param-value"><input type="text" data-med="varicose" placeholder="Normal / Detected"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">b) Weight</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="weight" placeholder="e.g. 65 kg"></td>
+                        <td class="param-label">b) Seizure</td>
+                        <td class="param-value"><input type="text" data-med="seizure" placeholder="No History"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">c) Blood Pressure</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="bp" placeholder="e.g. 120/80 mmHg"></td>
+                        <td class="param-label">c) Vertigo</td>
+                        <td class="param-value"><input type="text" data-med="vertigo" placeholder="No History / Fit"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">d) Pulse</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="pulse" placeholder="e.g. 72 /min"></td>
+                        <td class="param-label">d) Acrophobia</td>
+                        <td class="param-value"><input type="text" data-med="acrophobia" placeholder="No Fear of Heights"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">e) Hearing</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="hearing" placeholder="Normal / Clear"></td>
+                        <td class="param-label">e) Diabetes</td>
+                        <td class="param-value"><input type="text" data-med="diabetes" placeholder="Negative / Controlled"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">f) Refractive Error</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="refractive" placeholder="Nil / Correction Power"></td>
+                        <td class="param-label">f) Stroke</td>
+                        <td class="param-value"><input type="text" data-med="stroke" placeholder="No History"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">g) Colour Vision</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="colorVision" placeholder="Normal (Ishihara Clear)"></td>
+                        <td class="param-label">g) Heart Diseases</td>
+                        <td class="param-value"><input type="text" data-med="heartDisease" placeholder="No Symptoms / Healthy"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">h) Any Disability</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="disability" placeholder="None / Details if any"></td>
+                        <td class="param-label">h) Major Illness or Surgery</td>
+                        <td class="param-value"><input type="text" data-med="majorIllness" placeholder="No Major Invasions"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">i) Arm Function & Grip</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="armFunction" placeholder="Strong / Fit for Drilling"></td>
+                        <td class="param-label">i) Symptoms Visible</td>
+                        <td class="param-value"><input type="text" data-med="symptoms" placeholder="None / Healthy"></td>
+                    </tr>
+                    <tr>
+                        <td class="param-label">j) Leg & Foot Function</td>
+                        <td class="param-value" style="border-right: 2px solid #000;"><input type="text" data-med="legFunction" placeholder="Normal Range of Motion"></td>
+                        <td class="param-label">j) Others, if any</td>
+                        <td class="param-value"><input type="text" data-med="medicalOthers" placeholder="General Fitness Confirmed"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Additional Regulatory Checks (BOCW Act Rules)</div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Vision Metrics (Night, Perception, Glare, Peripheral):</label>
+                    <input type="text" class="line-input" id="visionMetrics" placeholder="All Optometry parameters satisfactory">
+                </div>
+                <div class="form-group">
+                    <label>Breathing Performance (Peak Flow Meter):</label>
+                    <input type="text" class="line-input" id="breathingPerf" placeholder="Standard execution limits verified">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-page" id="page4">
+            <div style="text-align: center; margin-bottom: 15px;">
+                <strong style="font-size: 14px; text-transform: uppercase;">Nomination and Declaration Form for Unexempted/Exempted Establishments</strong><br>
+                <span style="font-size: 11px; color:#444;">(Form 2 Revised &bull; Declaration under Employees' Provident Funds & Pension Schemes)</span>
+            </div>
+
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Part - A (EPF) Provident Fund Nominees</span>
                 <button type="button" class="btn btn-add-row" onclick="addEPFRow()">+ Add Nominee</button>
-                <table id="epfNomTable">
-                    <thead><tr><th>Nominee Name</th><th>Address</th><th>Relationship</th><th>DOB</th><th>Share %</th><th class="btn-table-action"></th></tr></thead>
-                    <tbody><tr>
-                        <td><input type="text" class="epf-name" placeholder="Nominee Name"></td>
-                        <td><input type="text" class="epf-addr" placeholder="Address"></td>
-                        <td><input type="text" class="epf-rel" placeholder="Wife"></td>
-                        <td><input type="text" class="epf-dob" placeholder="dd/mm/yyyy"></td>
-                        <td><input type="text" class="epf-share" placeholder="100%"></td>
+            </div>
+            <table id="epfNomTable">
+                <thead>
+                    <tr>
+                        <th style="width: 20%;">Name of Nominee</th>
+                        <th style="width: 25%;">Address</th>
+                        <th style="width: 15%;">Relationship</th>
+                        <th style="width: 12%;">Date of Birth</th>
+                        <th style="width: 10%;">Share (%)</th>
+                        <th style="width: 13%;">Minor Guardian Details</th>
+                        <th class="btn-table-action" style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Nominee Name"></td>
+                        <td><input type="text" placeholder="Full Address"></td>
+                        <td><input type="text" placeholder="e.g. Wife"></td>
+                        <td><input type="text" placeholder="dd/mm/yyyy"></td>
+                        <td><input type="text" placeholder="100%"></td>
+                        <td><input type="text" placeholder="If minor, Name/Address"></td>
                         <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
-                    </tr></tbody>
-                </table>
+                    </tr>
+                </tbody>
+            </table>
+            <p style="font-size:11px; color:#444; font-style:italic; margin-bottom:15px;">
+                * Certified that I have no family as defined in para 2(g) of the Employees Provident Fund Scheme 1952. My parents/others are dependent upon me.
+            </p>
+
+            <div class="section-title" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>Part - B (EPS) Family Pension Eligibility Details</span>
+                <button type="button" class="btn btn-add-row" onclick="addEPSRow()">+ Add Family Member</button>
+            </div>
+            <table id="epsFamTable">
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Name & Address of the Family Member</th>
+                        <th style="width: 15%;">Age</th>
+                        <th style="width: 40%;">Relationship with the member</th>
+                        <th class="btn-table-action" style="width: 5%;"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" placeholder="Name and permanent location text"></td>
+                        <td><input type="text" placeholder="Yrs"></td>
+                        <td><input type="text" placeholder="e.g. Dependent Mother"></td>
+                        <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="section-title">Certificate by Employer</div>
+            <p style="font-size:12px; line-height:1.5; text-align:justify; background:#faf7f0; padding:10px; border:1px solid #000;">
+                Certified that the above declaration and nomination has been signed / thumb impressed before me by the employee employed in my establishment after he/she has read the entries / the entries have been read over to him/her by me and got confirmed.
+            </p>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Certification Execution Date:</label>
+                    <input type="text" class="line-input" id="certDate" placeholder="dd/mm/yyyy">
+                </div>
+                <div class="form-group">
+                    <label>Factory / Establishment Execution Place:</label>
+                    <input type="text" class="line-input" id="certPlace" value="Mumbai, Maharashtra">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-page" id="page5">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <strong style="font-size: 16px; color: #002d62; text-transform: uppercase; letter-spacing: 0.5px;">Official Employee Enrollment Certificate</strong><br>
+                <span style="font-size: 12px; color: #333; font-weight: bold;">Ravi Enterprises &bull; Technical & Infrastructure Deployment Division</span>
             </div>
 
-            <div class="form-page" id="page5">
-                <div class="official-badge-panel">
-                    <h3>Employment Status Enrollment Track</h3>
-                    <div class="form-row">
-                        <div class="form-group"><label>Assigned ID:</label><input type="text" class="line-input" id="assignedEmployeeId" value="RE26001" readonly></div>
-                        <div class="form-group"><label>Daily Base Wage (₹):</label><input type="text" id="p5_dailyWage" class="line-input" value="850"></div>
+            <div class="official-badge-panel">
+                <h3>Employment Status Confirmation</h3>
+                <div class="official-contract-text">
+                    This document formally certifies that the individual whose profile parameters, identity validations, medical exam logs, and statutory pension mandates have been compiled across Pages 1, 2, 3, and 4 has successfully passed all company evaluation stages. The applicant is hereby formally integrated as an official employee of <strong>Ravi Enterprises</strong>, bound to active industrial site assignments, logistics protocols, and company operational ledgers.
+                </div>
+
+                <div class="section-title">Active Corporate Deployment Track</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Assigned Employee ID Number:</label>
+                        <input type="text" class="line-input" id="assignedEmployeeId" value="RE26001" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Official Skill Classification:</label>
+                        <select class="line-input" id="skillClass" style="border:none; border-bottom:1px solid #000; background:transparent;">
+                            <option>Highly Skilled (Diamond Core Specialist)</option>
+                            <option>Skilled Operator (Breaker/Rig Lead)</option>
+                            <option>Semi-Skilled Technician</option>
+                            <option selected>Unskilled Helper / Ground Crew</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Authorized Daily Base Wage (₹):</label>
+                        <input type="text" class="line-input" id="baseWage" placeholder="e.g. 950">
+                    </div>
+                    <div class="form-group">
+                        <label>Primary Project Site Location:</label>
+                        <input type="text" class="line-input" id="deploymentZone" placeholder="Initial Deployment Zone">
                     </div>
                 </div>
             </div>
 
-            <div class="form-page" id="page6">
-                <div class="vertical-document-stack">
-                    <div class="clean-render-zone" id="aadhaarFrontRenderZone"></div>
-                    <div class="clean-render-zone" id="aadhaarBackRenderZone"></div>
-                </div>
-            </div>
+            <div class="section-title">Legal Terms Acknowledgement</div>
+            <p style="font-size: 12px; line-height: 1.6; color:#333; text-align: justify; margin-bottom:25px;">
+                I hereby accept employment with Ravi Enterprises and agree to perform my assigned structural duties in compliance with the site safety mandates, tool maintenance tracking frameworks, and operational schedules. I certify that the bank details provided on Page 2 are linked to my personal ID and are authorized to clear standard payroll and travel cash allocations.
+            </p>
 
-            <div class="form-page" id="page7">
-                <div class="vertical-document-stack">
-                    <div class="clean-render-zone" id="panFrontRenderZone"></div>
-                    <div class="clean-render-zone" id="panBackRenderZone"></div>
+            <div style="margin-top: 50px; display: flex; justify-content: space-between;">
+                <div style="text-align: center; width: 220px;">
+                    <br><br>
+                    <p style="border-top: 1px solid #000; font-size: 12px; font-weight: bold; padding-top: 5px; margin: 0;">Signature / Thumb of Employee</p>
+                </div>
+                <div style="text-align: center; width: 220px;">
+                    <br><br>
+                    <p style="border-top: 1px solid #000; font-size: 12px; font-weight: bold; padding-top: 5px; margin: 0;">Onboarding Officer Verification</p>
+                </div>
+                <div style="text-align: center; width: 220px;">
+                    <br><br>
+                    <p style="border-top: 1px solid #000; font-size: 12px; font-weight: bold; padding-top: 5px; margin: 0;">Authorized Managing Partner</p>
+                    <span style="font-size: 10px; color:#555;">Ravi Enterprises Stamp</span>
                 </div>
             </div>
+        </div>
 
-            <div class="action-container">
-                <div><button type="button" class="btn btn-secondary" id="btnPrev" onclick="changePage(-1)" style="display:none;">&larr; Previous</button></div>
-                <div>
-                    <button type="button" class="btn btn-print" id="btnPrintCurrent" onclick="window.print()">Print This Page 🖨️</button>
-                    <button type="button" class="btn btn-print" id="btnPrintAll" onclick="printAllPages()" style="background-color: #17a2b8;">Print Complete Booklet to PDF 🖨️</button>
-                    <button type="button" class="btn btn-primary" id="btnNext" onclick="changePage(1)">Next Step &rarr;</button>
-                </div>
+        <div class="form-page" id="page6">
+            <div class="vertical-document-stack">
+                <div class="clean-render-zone" id="aadhaarFrontRenderZone">Aadhaar Front Preview</div>
+                <div class="clean-render-zone" id="aadhaarBackRenderZone">Aadhaar Back Preview</div>
             </div>
-        </form>
-    </div>
+        </div>
+
+        <div class="form-page" id="page7">
+            <div class="vertical-document-stack">
+                <div class="clean-render-zone" id="panFrontRenderZone">PAN Front Preview</div>
+                <div class="clean-render-zone" id="panBackRenderZone">PAN Back Preview</div>
+            </div>
+        </div>
+
+        <div class="action-container">
+            <div><button type="button" class="btn btn-secondary" id="btnPrev" onclick="changePage(-1)" style="display:none;">&larr; Previous</button></div>
+            <div>
+                <button type="button" class="btn btn-print" id="btnPrintCurrent" onclick="window.print()">Print This Page 🖨️</button>
+                <button type="button" class="btn btn-print" id="btnPrintAll" onclick="printAllPages()" style="background-color: #17a2b8;">Print Complete Booklet to PDF 🖨️</button>
+                <button type="button" class="btn btn-primary" id="btnNext" onclick="changePage(1)">Next Step &rarr;</button>
+            </div>
+        </div>
+    </form>
 </div>
 
 <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, doc, setDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-    // Configuration keys to enable full Firebase storage sync functionality
-    const firebaseConfig = {
-        apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
-        authDomain: "ravi-enterprises-portal.firebaseapp.com",
-        projectId: "ravi-enterprises-portal",
-        storageBucket: "ravi-enterprises-portal.firebasestorage.app",
-        messagingSenderId: "426112480142",
-        appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
-    };
+    // 1. Paste your Web Configuration App Key parameters over this block
+     const firebaseConfig = {
+    apiKey: "AIzaSyB58MdqjK9MPVXCtq0qij-nemMeihyY4Ww",
+    authDomain: "ravi-enterprises-portal.firebaseapp.com",
+    projectId: "ravi-enterprises-portal",
+    storageBucket: "ravi-enterprises-portal.firebasestorage.app",
+    messagingSenderId: "426112480142",
+    appId: "1:426112480142:web:5065c06dd5ad1b24b12adf"
+  };
 
-    let app, db, storage, firebaseEnabled = false;
 
-    try {
-        app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
-        storage = getStorage(app);
-        firebaseEnabled = true;
-    } catch(e) { 
-        console.error("Firebase startup aborted:", e); 
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const recordId = document.getElementById('workmanRecordId').value;
+    const docRef = doc(db, "workmen_records", recordId);
+    const syncStatus = document.getElementById('syncStatus');
+
+    // Debounce structure to avoid spamming the operational write thresholds
+    let saveTimeout;
+    function triggerAutoSave() {
+        syncStatus.innerText = "Status: Changes detected. Saving...";
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(saveFormDataToFirestore, 1500);
     }
 
-    let masterRecordsCache = {};
-    window.uploadedFiles = { photo: null, aadhaarFront: null, aadhaarBack: null, panFront: null, panBack: null };
+    // Capture text vectors from form elements
+    async function saveFormDataToFirestore() {
+        try {
+            const payload = {
+                workmanRecordId: document.getElementById('workmanRecordId').value,
+                doj: document.getElementById('doj').value,
+                contractorName: document.getElementById('contractorName').value,
+                workmanName: document.getElementById('workmanName').value,
+                designation: document.getElementById('designation').value,
+                fatherName: document.getElementById('fatherName').value,
+                permAddress: document.getElementById('permAddress').value,
+                district: document.getElementById('district').value,
+                state: document.getElementById('state').value,
+                pinCode: document.getElementById('pinCode').value,
+                presentAddr1: document.getElementById('presentAddr1').value,
+                presentAddr2: document.getElementById('presentAddr2').value,
+                gender: document.querySelector('input[name="gender_p1"]:checked')?.value || 'Male',
+                maritalStatus: document.querySelector('input[name="marital_p1"]:checked')?.value || 'Unmarried',
+                childrenCount: document.getElementById('childrenCount').value,
+                dob: document.getElementById('dob').value,
+                age: document.getElementById('age').value,
+                nationality: document.getElementById('nationality').value,
+                emergencyName: document.getElementById('emergencyName').value,
+                emergencyRelation: document.getElementById('emergencyRelation').value,
+                emergencyMobile: document.getElementById('emergencyMobile').value,
+                emergencyAddress: document.getElementById('emergencyAddress').value,
+                panNumber: document.getElementById('panNumber').value,
+                aadhaarNumber: document.getElementById('aadhaarNumber').value,
+                uanNumber: document.getElementById('uanNumber').value,
+                esicNumber: document.getElementById('esicNumber').value,
+                bankName: document.getElementById('bankName').value,
+                branchName: document.getElementById('branchName').value,
+                ifscCode: document.getElementById('ifscCode').value,
+                accountNumber: document.getElementById('accountNumber').value,
+                bankMobile: document.getElementById('bankMobile').value,
+                upiId: document.getElementById('upiId').value,
+                bloodGroup: document.getElementById('bloodGroup').value,
+                visionMetrics: document.getElementById('visionMetrics').value,
+                breathingPerf: document.getElementById('breathingPerf').value,
+                certDate: document.getElementById('certDate').value,
+                certPlace: document.getElementById('certPlace').value,
+                skillClass: document.getElementById('skillClass').value,
+                baseWage: document.getElementById('baseWage').value,
+                deploymentZone: document.getElementById('deploymentZone').value,
+                
+                // Tables serialization mapping
+                education: serializeTable('educationTable'),
+                experience: serializeTable('experienceTable'),
+                epfNominees: serializeTable('epfNomTable'),
+                epsFamily: serializeTable('epsFamTable'),
+                
+                // Medical parameters extraction map
+                medicalVitals: serializeMedicalVitals(),
+                updatedAt: new Date().toISOString()
+            };
 
-    // Real-Time LocalStorage Auto-Save Engine
-    function triggerLocalAutoSave() {
-        const currentData = {
-            workmanName: document.getElementById('p1_workmanName').value,
-            doj: document.getElementById('p1_doj').value,
-            contractorName: document.getElementById('p1_contractorName').value,
-            designation: document.getElementById('p1_designation').value,
-            fatherName: document.getElementById('p1_fatherName').value,
-            permanentAddress: document.getElementById('p1_permAddress').value,
-            district: document.getElementById('p1_district').value,
-            state: document.getElementById('p1_state').value,
-            pinCode: document.getElementById('p1_pinCode').value,
-            panNumber: document.getElementById('p2_panNumber').value,
-            aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
-            uanNumber: document.getElementById('p2_uanNumber').value,
-            esicNumber: document.getElementById('p2_esicNumber').value,
-            bloodGroup: document.getElementById('p3_bloodGroup').value,
-            medHeight: document.getElementById('med_height').value,
-            medWeight: document.getElementById('med_weight').value,
-            dailyWage: document.getElementById('p5_dailyWage').value
-        };
-        localStorage.setItem('re_form_autosave', JSON.stringify(currentData));
-        
-        const badge = document.getElementById('autoSaveBadge');
-        if (badge) {
-            badge.style.display = 'block';
-            badge.style.opacity = '1';
-            badge.innerText = "⚡ Form Auto-Saved Locally";
+            await setDoc(docRef, payload, { merge: true });
+            syncStatus.innerText = "Status: Live Synced to Firestore ✔️";
+        } catch (error) {
+            console.error("Firestore sync error:", error);
+            syncStatus.innerText = "Status: Sync Error (Check Config Keys)";
         }
     }
 
-    // Bind real-time input listeners to all text fields
-    function bindAutoSaveEvents() {
-        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
-            input.removeEventListener('input', triggerLocalAutoSave);
-            input.addEventListener('input', triggerLocalAutoSave);
-        });
-    }
-
-    // Restore cached data on fresh page reloads
-    window.addEventListener('DOMContentLoaded', () => {
-        bindAutoSaveEvents();
-        const stored = localStorage.getItem('re_form_autosave');
-        if (stored && !document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
-            const data = JSON.parse(stored);
-            document.getElementById('p1_workmanName').value = data.workmanName || "";
-            document.getElementById('p1_doj').value = data.doj || "07/11/2026";
-            document.getElementById('p1_contractorName').value = data.contractorName || "Ravi Enterprises";
-            document.getElementById('p1_designation').value = data.designation || "";
-            document.getElementById('p1_fatherName').value = data.fatherName || "";
-            document.getElementById('p1_permAddress').value = data.permanentAddress || "";
-            document.getElementById('p1_district').value = data.district || "";
-            document.getElementById('p1_state').value = data.state || "";
-            document.getElementById('p1_pinCode').value = data.pinCode || "";
-            document.getElementById('p2_panNumber').value = data.panNumber || "";
-            document.getElementById('p2_aadhaarNumber').value = data.aadhaarNumber || "";
-            document.getElementById('p2_uanNumber').value = data.uanNumber || "";
-            document.getElementById('p2_esicNumber').value = data.esicNumber || "";
-            document.getElementById('p3_bloodGroup').value = data.bloodGroup || "";
-            document.getElementById('med_height').value = data.medHeight || "";
-            document.getElementById('med_weight').value = data.medWeight || "";
-            document.getElementById('p5_dailyWage').value = data.dailyWage || "";
+    // Real-Time Listener Initialization
+    onSnapshot(docRef, (snapshot) => {
+        if (snapshot.exists() && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'SELECT') {
+            const data = snapshot.data();
+            syncStatus.innerText = "Status: Remote updates fetched in real-time 🔄";
             
-            const badge = document.getElementById('autoSaveBadge');
-            if (badge) {
-                badge.style.display = 'block';
-                badge.innerText = "⚡ Unsaved progress auto-restored";
-            }
+            // Map flat data records back to DOM elements
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element && element.type !== 'file') {
+                    element.value = data[key];
+                }
+            });
         }
     });
 
-    window.previewPhoto = function(input) {
-        const file = input.files[0];
-        if (file) {
-            window.uploadedFiles.photo = file;
-            const reader = new FileReader();
-            reader.onload = function(e) { 
-                document.getElementById('photoPreviewImg').src = e.target.result; 
-                document.getElementById('photoPreviewImg').style.display = 'block'; 
-            }
-            reader.readAsDataURL(file);
-        }
-    };
-
-    window.syncDocumentFile = function(input, targetZoneId) {
-        const file = input.files[0];
-        const zone = document.getElementById(targetZoneId);
-        if (file && zone) {
-            if (targetZoneId === 'aadhaarFrontRenderZone') window.uploadedFiles.aadhaarFront = file;
-            if (targetZoneId === 'aadhaarBackRenderZone') window.uploadedFiles.aadhaarBack = file;
-            if (targetZoneId === 'panFrontRenderZone') window.uploadedFiles.panFront = file;
-            if (targetZoneId === 'panBackRenderZone') window.uploadedFiles.panBack = file;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                if (file.type.startsWith('image/')) { 
-                    zone.innerHTML = `<img src="${e.target.result}" alt="Identity Document">`; 
-                } else if (file.type === 'application/pdf') { 
-                    zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`; 
-                }
-            }
-            reader.readAsDataURL(file);
-        }
-    };
-
-    async function uploadFileToFirebase(file, path) {
-        if (!firebaseEnabled || !file || typeof file === "string") return file || "";
-        const storageRef = ref(storage, path);
-        const snapshot = await uploadBytes(storageRef, file);
-        return await getDownloadURL(snapshot.ref);
-    }
-
-    window.saveCompleteRecordToFirebase = async function() {
-        const recordId = document.getElementById('workmanRecordId').value;
-        const submitBtn = document.getElementById('btnNext');
-        
-        if (!firebaseEnabled) {
-            let localRecords = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
-            const payload = extractFormPayload(recordId, "");
-            localRecords[recordId] = payload;
-            localStorage.setItem('re_local_db_records', JSON.stringify(localRecords));
-            localStorage.removeItem('re_form_autosave');
-            alert(`Auto-Save Alternate triggered: Record ${recordId} preserved safely inside browser storage!`);
-            rebuildLocalSidebarList();
-            return;
-        }
-
-        submitBtn.innerText = "Syncing with cloud instances...";
-        submitBtn.disabled = true;
-
-        try {
-            const photoUrl = await uploadFileToFirebase(window.uploadedFiles.photo, `records/${recordId}/profile.jpg`);
-            const aadhFrontUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarFront, `records/${recordId}/aadhaar_front.jpg`);
-            const aadhBackUrl = await uploadFileToFirebase(window.uploadedFiles.aadhaarBack, `records/${recordId}/aadhaar_back.jpg`);
-            const panFrontUrl = await uploadFileToFirebase(window.uploadedFiles.panFront, `records/${recordId}/pan_front.jpg`);
-            const panBackUrl = await uploadFileToFirebase(window.uploadedFiles.panBack, `records/${recordId}/pan_back.jpg`);
-
-            const payload = extractFormPayload(recordId, { photoUrl, aadhFrontUrl, aadhBackUrl, panFrontUrl, panBackUrl });
-            await setDoc(doc(db, "workmen_records", recordId), payload);
-            localStorage.removeItem('re_form_autosave');
-            alert(`Record ${recordId} synchronized successfully with Firebase cloud servers!`);
-        } catch (err) {
-            console.error(err);
-            alert("Firebase connection failure. Saved to alternative fallback storage.");
-            let localRecords = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
-            const payload = extractFormPayload(recordId, "");
-            localRecords[recordId] = payload;
-            localStorage.setItem('re_local_db_records', JSON.stringify(localRecords));
-            localStorage.removeItem('re_form_autosave');
-            rebuildLocalSidebarList();
-        } finally {
-            submitBtn.innerText = "Complete & Save";
-            submitBtn.disabled = false;
-        }
-    };
-
-    function extractFormPayload(recordId, urls) {
-        const educationHistory = [];
-        document.querySelectorAll('#educationTable tbody tr').forEach(row => {
+    // Sub-matrix engines
+    function serializeTable(tableId) {
+        const rows = document.querySelectorAll(`#${tableId} tbody tr`);
+        return Array.from(rows).map(row => {
             const inputs = row.querySelectorAll('input');
-            if(inputs.length && inputs[0].value) {
-                educationHistory.push({ level: inputs[0].value, year: inputs[1].value, board: inputs[2].value, location: inputs[3].value });
-            }
+            return Array.from(inputs).map(i => i.value);
         });
+    }
 
-        const epfNominees = [];
-        document.querySelectorAll('#epfNomTable tbody tr').forEach(row => {
-            const inputs = row.querySelectorAll('input');
-            if(inputs.length && inputs[0].value) {
-                epfNominees.push({ name: inputs[0].value, address: inputs[1].value, relationship: inputs[2].value, dob: inputs[3].value, share: inputs[4].value });
-            }
+    function serializeMedicalVitals() {
+        const vitals = {};
+        document.querySelectorAll('#medicalTable input[data-med]').forEach(input => {
+            vitals[input.getAttribute('data-med')] = input.value;
         });
-
-        return {
-            recordId,
-            workmanName: document.getElementById('p1_workmanName').value,
-            doj: document.getElementById('p1_doj').value,
-            contractorName: document.getElementById('p1_contractorName').value,
-            designation: document.getElementById('p1_designation').value,
-            fatherName: document.getElementById('p1_fatherName').value,
-            permanentAddress: document.getElementById('p1_permAddress').value,
-            district: document.getElementById('p1_district').value,
-            state: document.getElementById('p1_state').value,
-            pinCode: document.getElementById('p1_pinCode').value,
-            gender: document.getElementById('gender_male').checked ? 'Male' : 'Female',
-            maritalStatus: document.getElementById('marital_married').checked ? 'Married' : 'Unmarried',
-            dob: document.getElementById('p1_dob').value,
-            age: document.getElementById('p1_age').value,
-            nationality: document.getElementById('p1_nationality').value,
-            emergencyName: document.getElementById('p1_emergencyName').value,
-            emergencyMobile: document.getElementById('p1_emergencyMobile').value,
-            educationHistory,
-            epfNominees,
-            compliance: {
-                panNumber: document.getElementById('p2_panNumber').value,
-                aadhaarNumber: document.getElementById('p2_aadhaarNumber').value,
-                uanNumber: document.getElementById('p2_uanNumber').value,
-                esicNumber: document.getElementById('p2_esicNumber').value,
-            },
-            medical: {
-                bloodGroup: document.getElementById('p3_bloodGroup').value,
-                height: document.getElementById('med_height').value,
-                weight: document.getElementById('med_weight').value,
-                varicose: document.getElementById('med_varicose').value,
-                seizure: document.getElementById('med_seizure').value
-            },
-            deployment: { dailyWage: document.getElementById('p5_dailyWage').value },
-            urls: urls || {}
-        };
+        return vitals;
     }
 
-    if (firebaseEnabled) {
-        onSnapshot(collection(db, "workmen_records"), (snapshot) => {
-            const listContainer = document.getElementById('workerList');
-            listContainer.innerHTML = "";
-            masterRecordsCache = {};
-            
-            if(snapshot.empty) {
-                listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;">No records found.</li>`;
-            } else {
-                snapshot.forEach((doc) => {
-                    const data = doc.data();
-                    masterRecordsCache[doc.id] = data;
-                    renderListItem(doc.id, data.workmanName);
-                });
-            }
-            calculateNextAvailableSequenceIndex();
-        });
-    } else {
-        window.addEventListener('load', () => { rebuildLocalSidebarList(); });
-    }
-
-    function rebuildLocalSidebarList() {
-        const listContainer = document.getElementById('workerList');
-        listContainer.innerHTML = "";
-        masterRecordsCache = JSON.parse(localStorage.getItem('re_local_db_records') || '{}');
-        const ids = Object.keys(masterRecordsCache);
-        if(!ids.length) {
-            listContainer.innerHTML = `<li style="text-align:center; padding:15px; color:#999;font-size:11px;">Form Running in Offline Local alternate mode.</li>`;
-        } else {
-            ids.forEach(id => { renderListItem(id, masterRecordsCache[id].workmanName); });
-        }
-        calculateNextAvailableSequenceIndex();
-    }
-
-    function renderListItem(id, name) {
-        const listContainer = document.getElementById('workerList');
-        const li = document.createElement('li');
-        li.className = "worker-list-item";
-        li.innerHTML = `<span>${name}</span> <span class="id-badge">${id}</span>`;
-        li.onclick = () => populateFormWithSelectedWorker(id, li);
-        listContainer.appendChild(li);
-    }
-
-    function calculateNextAvailableSequenceIndex() {
-        const existingIds = Object.keys(masterRecordsCache);
-        let nextIndex = existingIds.length + 1;
-        let generatedId = `RE26${String(nextIndex).padStart(3, '0')}`;
-        while(existingIds.includes(generatedId)) { nextIndex++; generatedId = `RE26${String(nextIndex).padStart(3, '0')}`; }
-        if(!document.getElementById('workmanRecordId').hasAttribute('data-custom-edit')) {
-            document.getElementById('workmanRecordId').value = generatedId;
-            document.getElementById('assignedEmployeeId').value = generatedId;
-        }
-    }
-
-    window.resetFormToNewEmployee = function() {
-        document.getElementById('workmanForm').reset();
-        document.getElementById('workmanRecordId').removeAttribute('data-custom-edit');
-        document.getElementById('photoPreviewImg').src = "";
-        document.getElementById('photoPreviewImg').style.display = "none";
-        document.getElementById('aadhaarFrontRenderZone').innerHTML = "";
-        document.getElementById('aadhaarBackRenderZone').innerHTML = "";
-        document.getElementById('panFrontRenderZone').innerHTML = "";
-        document.getElementById('panBackRenderZone').innerHTML = "";
-        localStorage.removeItem('re_form_autosave');
-        document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
-        calculateNextAvailableSequenceIndex();
-        navigateToPage(1);
-    };
-
-    function populateFormWithSelectedWorker(recordId, elementRef) {
-        document.querySelectorAll('.worker-list-item').forEach(el => el.classList.remove('selected'));
-        elementRef.classList.add('selected');
-
-        const data = masterRecordsCache[recordId];
-        if(!data) return;
-
-        document.getElementById('workmanRecordId').value = data.recordId;
-        document.getElementById('workmanRecordId').setAttribute('data-custom-edit', 'true');
-        document.getElementById('assignedEmployeeId').value = data.recordId;
-        
-        document.getElementById('p1_workmanName').value = data.workmanName || "";
-        document.getElementById('p1_doj').value = data.doj || "";
-        document.getElementById('p1_contractorName').value = data.contractorName || "";
-        document.getElementById('p1_designation').value = data.designation || "";
-        document.getElementById('p1_fatherName').value = data.fatherName || "";
-        document.getElementById('p1_permAddress').value = data.permanentAddress || "";
-        document.getElementById('p1_district').value = data.district || "";
-        document.getElementById('p1_state').value = data.state || "";
-        document.getElementById('p1_pinCode').value = data.pinCode || "";
-        document.getElementById('p1_dob').value = data.dob || "";
-        document.getElementById('p1_age').value = data.age || "";
-        document.getElementById('p1_nationality').value = data.nationality || "Indian";
-        document.getElementById('p1_emergencyName').value = data.emergencyName || "";
-        document.getElementById('p1_emergencyMobile').value = data.emergencyMobile || "";
-        
-        if(data.gender === 'Male') document.getElementById('gender_male').checked = true;
-        else document.getElementById('gender_female').checked = true;
-
-        if(data.maritalStatus === 'Married') document.getElementById('marital_married').checked = true;
-        else document.getElementById('marital_unmarried').checked = true;
-
-        if(data.compliance) {
-            document.getElementById('p2_panNumber').value = data.compliance.panNumber || "";
-            document.getElementById('p2_aadhaarNumber').value = data.compliance.aadhaarNumber || "";
-            document.getElementById('p2_uanNumber').value = data.compliance.uanNumber || "";
-            document.getElementById('p2_esicNumber').value = data.compliance.esicNumber || "";
-        }
-
-        if(data.medical) {
-            document.getElementById('p3_bloodGroup').value = data.medical.bloodGroup || "";
-            document.getElementById('med_height').value = data.medical.height || "";
-            document.getElementById('med_weight').value = data.medical.weight || "";
-            document.getElementById('med_varicose').value = data.medical.varicose || "";
-            document.getElementById('med_seizure').value = data.medical.seizure || "";
-        }
-
-        if(data.deployment) {
-            document.getElementById('p5_dailyWage').value = data.deployment.dailyWage || "";
-        }
-
-        // Re-inject dynamic rows for Education if cached data is present
-        const eduTbody = document.querySelector('#educationTable tbody');
-        eduTbody.innerHTML = '';
-        if(data.educationHistory && data.educationHistory.length) {
-            data.educationHistory.forEach(edu => {
-                const row = eduTbody.insertRow();
-                row.innerHTML = `
-                    <td><input type="text" class="edu-field" value="${edu.level || ''}"></td>
-                    <td><input type="text" class="edu-year" value="${edu.year || ''}"></td>
-                    <td><input type="text" class="edu-board" value="${edu.board || ''}"></td>
-                    <td><input type="text" class="edu-loc" value="${edu.location || ''}"></td>
-                    <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
-                `;
-            });
-        } else {
-            const row = eduTbody.insertRow();
-            row.innerHTML = `<td><input type="text" class="edu-field"></td><td><input type="text" class="edu-year"></td><td><input type="text" class="edu-board"></td><td><input type="text" class="edu-loc"></td><td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>`;
-        }
-
-        // Re-inject dynamic rows for EPF Nominees if cached data is present
-        const epfTbody = document.querySelector('#epfNomTable tbody');
-        epfTbody.innerHTML = '';
-        if(data.epfNominees && data.epfNominees.length) {
-            data.epfNominees.forEach(nom => {
-                const row = epfTbody.insertRow();
-                row.innerHTML = `
-                    <td><input type="text" class="epf-name" value="${nom.name || ''}"></td>
-                    <td><input type="text" class="epf-addr" value="${nom.address || ''}"></td>
-                    <td><input type="text" class="epf-rel" value="${nom.relationship || ''}"></td>
-                    <td><input type="text" class="epf-dob" value="${nom.dob || ''}"></td>
-                    <td><input type="text" class="epf-share" value="${nom.share || ''}"></td>
-                    <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
-                `;
-            });
-        } else {
-            const row = epfTbody.insertRow();
-            row.innerHTML = `<td><input type="text" class="epf-name"></td><td><input type="text" class="epf-addr"></td><td><input type="text" class="epf-rel"></td><td><input type="text" class="epf-dob"></td><td><input type="text" class="epf-share"></td><td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>`;
-        }
-
-        if(data.urls?.photoUrl) {
-            document.getElementById('photoPreviewImg').src = data.urls.photoUrl;
-            document.getElementById('photoPreviewImg').style.display = "block";
-        } else {
-            document.getElementById('photoPreviewImg').style.display = "none";
-        }
-
-        renderSavedUrlToZone(data.urls?.photoUrl, 'photoPreviewImg');
-        renderSavedUrlToZone(data.urls?.aadhFrontUrl, 'aadhaarFrontRenderZone');
-        renderSavedUrlToZone(data.urls?.aadhBackUrl, 'aadhaarBackRenderZone');
-        renderSavedUrlToZone(data.urls?.panFrontUrl, 'panFrontRenderZone');
-        renderSavedUrlToZone(data.urls?.panBackUrl, 'panBackRenderZone');
-
-        bindAutoSaveEvents();
-        navigateToPage(1);
-    }
-
-    function renderSavedUrlToZone(url, elementId) {
-        const zone = document.getElementById(elementId);
-        if(!url) { 
-            if(elementId.includes('Zone')) zone.innerHTML = ""; 
-            return; 
-        }
-        if(elementId === 'photoPreviewImg') {
-            zone.src = url;
-            zone.style.display = 'block';
-            return;
-        }
-        if(url.startsWith('data:') || url.includes('.jpg') || url.includes('.jpeg') || url.includes('.png') || !url.includes('.pdf')) {
-            zone.innerHTML = `<img src="${url}" alt="Identity Document">`;
-        } else {
-            zone.innerHTML = `<embed src="${url}" type="application/pdf" />`;
-        }
-    }
-
-    window.filterSidebarList = function() {
-        const q = document.getElementById('sidebarSearch').value.toLowerCase();
-        document.querySelectorAll('#workerList .worker-list-item').forEach(item => {
-            const text = item.querySelector('span').innerText.toLowerCase();
-            item.style.display = text.includes(q) ? 'flex' : 'none';
-        });
-    };
+    // Attach real-time structural handlers across fields
+    document.querySelectorAll('input, select, textarea').forEach(el => {
+        el.addEventListener('input', triggerAutoSave);
+        el.addEventListener('change', triggerAutoSave);
+    });
 </script>
 
 <script>
@@ -1167,44 +1076,83 @@
     const totalPages = 7;
 
     function triggerPhotoUpload() { document.getElementById('photoFileInput').click(); }
+    function previewPhoto(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.getElementById('photoPreviewImg');
+                img.src = e.target.result; img.style.display = 'block';
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function syncDocumentFile(input, targetZoneId) {
+        const file = input.files[0];
+        const zone = document.getElementById(targetZoneId);
+        if (file && zone) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                if (file.type.startsWith('image/')) {
+                    zone.innerHTML = `<img src="${e.target.result}" alt="Attached Identity Document">`;
+                } else if (file.type === 'application/pdf') {
+                    zone.innerHTML = `<embed src="${e.target.result}" type="application/pdf" />`;
+                } else {
+                    zone.innerHTML = `<div style="font-size:12px; color:#444;">Attached: ${file.name}</div>`;
+                }
+            }
+            reader.readAsDataURL(file);
+        }
+    }
 
     function addEducationRow() {
         const tbody = document.getElementById('educationTable').getElementsByTagName('tbody')[0];
         const newRow = tbody.insertRow();
         newRow.innerHTML = `
-            <td><input type="text" class="edu-field" placeholder="e.g. Matriculation"></td>
-            <td><input type="text" class="edu-year" placeholder="Year"></td>
-            <td><input type="text" class="edu-board" placeholder="Board Name"></td>
-            <td><input type="text" class="edu-loc" placeholder="City/State"></td>
+            <td><input type="text" placeholder="e.g. Matriculation"></td>
+            <td><input type="text" placeholder="Year"></td>
+            <td><input type="text" placeholder="Board Name"></td>
+            <td><input type="text" placeholder="City/State"></td>
             <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
         `;
-        // Re-bind change listeners to new inputs
-        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
-            input.addEventListener('input', () => {
-                const badge = document.getElementById('autoSaveBadge');
-                if(badge) badge.style.display = 'block';
-            });
-        });
+    }
+
+    function addExperienceRow() {
+        const tbody = document.getElementById('experienceTable').getElementsByTagName('tbody')[0];
+        const newRow = tbody.insertRow();
+        newRow.innerHTML = `
+            <td><input type="text" placeholder="Contractor/Org"></td>
+            <td><input type="text" placeholder="Site Location"></td>
+            <td><input type="text" placeholder="Role"></td>
+            <td><input type="text" placeholder="Amount"></td>
+            <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+        `;
     }
 
     function addEPFRow() {
         const tbody = document.getElementById('epfNomTable').getElementsByTagName('tbody')[0];
         const newRow = tbody.insertRow();
         newRow.innerHTML = `
-            <td><input type="text" class="epf-name" placeholder="Nominee Name"></td>
-            <td><input type="text" class="epf-addr" placeholder="Address"></td>
-            <td><input type="text" class="epf-rel" placeholder="Wife"></td>
-            <td><input type="text" class="epf-dob" placeholder="dd/mm/yyyy"></td>
-            <td><input type="text" class="epf-share" placeholder="100%"></td>
+            <td><input type="text" placeholder="Nominee Name"></td>
+            <td><input type="text" placeholder="Full Address"></td>
+            <td><input type="text" placeholder="e.g. Wife"></td>
+            <td><input type="text" placeholder="dd/mm/yyyy"></td>
+            <td><input type="text" placeholder="100%"></td>
+            <td><input type="text" placeholder="If minor, Name/Address"></td>
             <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
         `;
-        // Re-bind change listeners to new inputs
-        document.querySelectorAll('.line-input, input[type="text"]').forEach(input => {
-            input.addEventListener('input', () => {
-                const badge = document.getElementById('autoSaveBadge');
-                if(badge) badge.style.display = 'block';
-            });
-        });
+    }
+
+    function addEPSRow() {
+        const tbody = document.getElementById('epsFamTable').getElementsByTagName('tbody')[0];
+        const newRow = tbody.insertRow();
+        newRow.innerHTML = `
+            <td><input type="text" placeholder="Name and permanent location text"></td>
+            <td><input type="text" placeholder="Yrs"></td>
+            <td><input type="text" placeholder="e.g. Dependent Mother"></td>
+            <td style="text-align:center;"><button type="button" class="btn-table-action" onclick="removeTableRow(this)">🗑</button></td>
+        `;
     }
 
     function removeTableRow(button) {
@@ -1220,14 +1168,7 @@
         document.getElementById(`page${currentPage}`).classList.add('active');
         document.querySelector(`#wizardProgress li:nth-child(${currentPage})`).classList.add('active');
         document.getElementById('btnPrev').style.display = currentPage === 1 ? 'none' : 'inline-block';
-        
-        if (currentPage === totalPages) {
-            document.getElementById('btnNext').innerText = 'Complete & Save';
-            document.getElementById('btnNext').setAttribute('onclick', 'saveCompleteRecordToFirebase()');
-        } else {
-            document.getElementById('btnNext').innerText = 'Next Step \u2192';
-            document.getElementById('btnNext').setAttribute('onclick', 'changePage(1)');
-        }
+        document.getElementById('btnNext').innerText = currentPage === totalPages ? 'Complete & Save' : 'Next Step \u2192';
     }
     
     function changePage(direction) { navigateToPage(currentPage + direction); }
@@ -1235,7 +1176,9 @@
     function printAllPages() {
         document.body.classList.add('print-all-mode');
         window.print();
-        setTimeout(() => { document.body.classList.remove('print-all-mode'); }, 500);
+        setTimeout(() => {
+            document.body.classList.remove('print-all-mode');
+        }, 500);
     }
 </script>
 </body>
